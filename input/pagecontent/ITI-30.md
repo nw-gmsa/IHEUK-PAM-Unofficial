@@ -81,7 +81,7 @@ The Consumer **shall** update its database according to:
 | Field valued | Replace the stored value |
 {:.grid}
 
-On A40 the Consumer **shall** merge all data held against the non-surviving identifiers (MRG-1) into the surviving record (PID-3), and **shall not** treat the non-surviving identifiers as active. In FHIR this is expressed with `Patient.link`: the surviving Patient `replaces` the non-surviving one, and the non-surviving Patient is `replaced-by` the surviving one and has `active` = false. See the [A40 example](Bundle-Bundle-ADT-A40.html).
+On A40 the Consumer **shall** merge all data held against the non-surviving identifiers (MRG-1) into the surviving record (PID-3), and **shall not** treat the non-surviving identifiers as active. In FHIR this is expressed with `Patient.link`: the non-surviving Patient is `replaced-by` the surviving one and has `active` = false. The surviving Patient **may** also carry a `replaces` link to the non-surviving one. See the [A40 example](Bundle-Bundle-ADT-A40.html).
 
 ### FHIR Messaging
 

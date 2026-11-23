@@ -52,6 +52,8 @@ HL7 Europe Base does not define an Encounter profile, so this profile is based o
 
 * serviceType MS
 * serviceType ^short = "PV1-10 Hospital Service (NHS Treatment Function Code)"
+* serviceType from $VS-NHSTreatmentFunction (preferred)
+* serviceType ^comment = "NHS Data Dictionary Treatment Function Code, as published by NHS England (https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function, the FHIR version of HSCIC ITK Table ZU012). UK Core binds Encounter.serviceType (preferred) to SNOMED CT concepts from the UK Services reference set, which may be sent as an additional coding."
 
 * priority ^short = "PV2-25 Visit Priority Code"
 

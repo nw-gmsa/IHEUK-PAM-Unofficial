@@ -36,16 +36,23 @@ parameters:
   logging: progress
   shownav: true
   active-tables: 'false'
-  apply-contact: 'true'
-  apply-jurisdiction: 'true'
-  apply-publisher: 'true'
-  apply-version: 'true'
+  # default-* (not apply-*) so that resources copied from other publishers (input/resources) keep their own metadata
+  default-contact: 'true'
+  default-jurisdiction: 'true'
+  default-publisher: 'true'
+  default-version: 'true'
   excludettl: 'true'
   excludemap: 'true'
   generate:
     - xml
     - json
   pin-canonicals: pin-multiples
+  # NHS England terminology copied from the deprecated uk.nhsdigital.r4 2.11.0 (input/resources), keeping NHS England's canonicals
+  special-url:
+    - https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function
+    - https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-clinical-specialty
+    - https://fhir.nhs.uk/ValueSet/NHSDataModelAndDictionary-treatment-function
+    - https://fhir.nhs.uk/ValueSet/NHSDataModelAndDictionary-clinical-specialty
 
 instanceOptions:
   setMetaProfile: standalone-only

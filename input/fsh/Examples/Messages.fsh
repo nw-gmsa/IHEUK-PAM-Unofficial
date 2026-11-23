@@ -1,12 +1,12 @@
 RuleSet: PAMHeader(event)
 * eventCoding = $v2-0003#{event}
 * source.name = "PAS"
-* source.endpoint = "https://pas.example-trust.nhs.uk/hl7"
+* source.endpoint = "http://example.org/hl7v2/PAS"
 * sender = Reference(Organization-R0A)
 * sender.identifier.system = $ods-code
 * sender.identifier.value = "R0A"
 * destination[+].name = "ROUTE"
-* destination[=].endpoint = "https://integration.example-trust.nhs.uk/hl7"
+* destination[=].endpoint = "http://example.org/hl7v2/ROUTE"
 
 Instance:    MessageHeader-A28
 InstanceOf:  PAMMessageHeader
@@ -65,14 +65,14 @@ InstanceOf:  PAMMessageHeader
 Title:       "Message Header - A40"
 Usage:       #inline
 * insert PAMHeader(A40)
-* focus[+] = Reference(Patient-Merged-OctaviaCHISLETT)
+* focus[+] = Reference(Patient-OctaviaCHISLETT-9449305552)
 
 Instance:    Bundle-ADT-A40
 InstanceOf:  PAMBundleMessage
 Title:       "Message - ADT^A40 Merge Patient [ITI-30]"
-Description: "FHIR Message equivalent of ADT^A40^ADT_A39. The surviving Patient (PID) links to the non-surviving Patient (MRG-1)."
+Description: "FHIR Message equivalent of ADT^A40^ADT_A39. The non-surviving Patient (MRG-1) is replaced-by the surviving Patient (PID)."
 Usage:       #example
 * insert MessageBundle("urn:uuid:0e3f6a1b-2c4d-4e5f-8a9b-7c6d5e4f0a40", "2026-11-23T16:00:00Z")
 * insert Entry("https://fhir.ihe-uk.org/ITI/PAM/MessageHeader/MessageHeader-A40", MessageHeader-A40)
-* insert Entry("https://fhir.ihe-uk.org/ITI/PAM/Patient/Patient-Merged-OctaviaCHISLETT", Patient-Merged-OctaviaCHISLETT)
+* insert Entry("https://fhir.ihe-uk.org/ITI/PAM/Patient/Patient-OctaviaCHISLETT-9449305552", Patient-OctaviaCHISLETT-9449305552)
 * insert Entry("https://fhir.ihe-uk.org/ITI/PAM/Patient/Patient-Duplicate-MRN999999", Patient-Duplicate-MRN999999)

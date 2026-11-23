@@ -1,0 +1,31 @@
+{
+  "resourceType": "ValueSet",
+  "id": "NHSDataModelAndDictionary-treatment-function",
+  "url": "https://fhir.nhs.uk/ValueSet/NHSDataModelAndDictionary-treatment-function",
+  "version": "1.2.0",
+  "name": "NHSDataDictionaryTreatmentFunctionCodes",
+  "status": "draft",
+  "date": "2019-02-01T00:00:00+00:00",
+  "publisher": "NHS Digital",
+  "contact": [
+    {
+      "name": "Interoperability Team",
+      "telecom": [
+        {
+          "system": "email",
+          "value": "interoperabilityteam@nhs.net",
+          "use": "work"
+        }
+      ]
+    }
+  ],
+  "description": "A ValueSet to identify the specialty of the care professional or team. FHIR Version of NHS Data Dictionary Main Specialty Code and HSCIC ITK HL7v2 Table ZU012 Despite the description above, this resource contains NHS Data Dictionary [TREATMENT FUNCTION CODE](https://www.datadictionary.nhs.uk/attributes/treatment_function_code.html) values (used in HL7 v2 PV1-10), not Main Specialty codes.\n\n**Copied into the IHE UK PAM (Unofficial) IG** from the deprecated NHS England package `uk.nhsdigital.r4` 2.11.0 (NHS England FHIR Implementation Guide, deprecated 04/10/2023), unchanged apart from this note, because it is not carried by its replacement `fhir.r4.nhsengland.stu1` or by UK Core. The canonical URL is NHS England's. This copy is NHS England version 1.2.0, published by NHS Digital; the IG Publisher gives republished copies this guide's version and publisher. The content reflects the NHS Data Dictionary at the time of publication and may not include later changes.",
+  "copyright": "Copyright © 2018 NHS Digital",
+  "compose": {
+    "include": [
+      {
+        "system": "https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function"
+      }
+    ]
+  }
+}

@@ -120,7 +120,7 @@ Example: `9449305552^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH~MRN123456^^^R0A^MR^R
 | 7 | Attending Doctor | XCN | O | [0..1] | 0010 | National GP / Consultant code | participant (ATND) |
 | 8 | Referring Doctor | XCN | O | [0..1] | 0010 | | participant (REF) |
 | 9 | Consulting Doctor | XCN | O | [0..*] | 0010 | Consultant in charge of the care spell. The first is the main consultant; for shared care, a list | participant (CON) |
-| 10 | Hospital Service | IS | O | [0..1] | 0069 | **v2.5.1**: IS (HSCIC: CE). NHS Treatment Function Code | serviceType |
+| 10 | Hospital Service | IS | O | [0..1] | 0069 | **v2.5.1**: IS (HSCIC: CE). [Treatment Function Code](https://www.datadictionary.nhs.uk/attributes/treatment_function_code.html) (not Main Specialty) | serviceType (`https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function`) |
 | 13 | Re-admission Indicator | IS | O | [0..1] | 0092 | | hospitalization.reAdmission |
 | 14 | Admit Source | IS | O | [0..1] | 0023 | **v2.5.1**: IS (HSCIC: CE). NHS DD Source of Admission | hospitalization.admitSource |
 | 15 | Ambulatory Status | IS | O | [0..*] | 0009 | IHE Ambulatory Patient Data option | (Flag / Observation) |

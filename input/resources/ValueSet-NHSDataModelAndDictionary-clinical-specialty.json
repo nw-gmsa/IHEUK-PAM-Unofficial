@@ -1,0 +1,31 @@
+{
+  "resourceType": "ValueSet",
+  "id": "NHSDataModelAndDictionary-clinical-specialty",
+  "url": "https://fhir.nhs.uk/ValueSet/NHSDataModelAndDictionary-clinical-specialty",
+  "version": "1.2.0",
+  "name": "NHSDataDictionaryMainClinicalSpecialty",
+  "status": "draft",
+  "date": "2019-02-01T00:00:00+00:00",
+  "publisher": "NHS Digital",
+  "contact": [
+    {
+      "name": "Interoperability Team",
+      "telecom": [
+        {
+          "system": "email",
+          "value": "interoperabilityteam@nhs.net",
+          "use": "work"
+        }
+      ]
+    }
+  ],
+  "description": "A ValueSet to identify the specialty of the care professional or team. FHIR Version of NHS Data Dictionary Main Specialty Code and HSCIC ITK HL7v2 Table ZU012 This resource contains NHS Data Dictionary [MAIN SPECIALTY CODE](https://www.datadictionary.nhs.uk/attributes/main_specialty_code.html) values (HSCIC ITK Table ZU012, used in ZU1-6).\n\n**Copied into the IHE UK PAM (Unofficial) IG** from the deprecated NHS England package `uk.nhsdigital.r4` 2.11.0 (NHS England FHIR Implementation Guide, deprecated 04/10/2023), unchanged apart from this note, because it is not carried by its replacement `fhir.r4.nhsengland.stu1` or by UK Core. The canonical URL is NHS England's. This copy is NHS England version 1.2.0, published by NHS Digital; the IG Publisher gives republished copies this guide's version and publisher. The content reflects the NHS Data Dictionary at the time of publication and may not include later changes.",
+  "copyright": "Copyright © 2018 NHS Digital",
+  "compose": {
+    "include": [
+      {
+        "system": "https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-clinical-specialty"
+      }
+    ]
+  }
+}

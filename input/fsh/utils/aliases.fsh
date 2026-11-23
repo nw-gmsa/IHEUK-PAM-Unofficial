@@ -23,6 +23,10 @@ Alias: $UKCore-AdmissionMethod = https://fhir.hl7.org.uk/StructureDefinition/Ext
 Alias: $UKCore-DischargeMethod = https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-DischargeMethod
 Alias: $UKCore-LegalStatus = https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-LegalStatus
 
+// NHS England terminology (uk.nhsdigital.r4)
+Alias: $NHSTreatmentFunction = https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function
+Alias: $VS-NHSTreatmentFunction = https://fhir.nhs.uk/ValueSet/NHSDataModelAndDictionary-treatment-function
+
 // UK Core terminology
 Alias: $UKCore-AdmissionMethodEngland = https://fhir.hl7.org.uk/CodeSystem/UKCore-AdmissionMethodEngland
 Alias: $UKCore-SourceOfAdmissionEngland = https://fhir.hl7.org.uk/CodeSystem/UKCore-SourceOfAdmissionEngland

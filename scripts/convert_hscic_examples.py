@@ -10,10 +10,75 @@ Usage: python3 -I scripts/convert_hscic_examples.py "Specifications/HSCIC/HL7 v2
 import pathlib
 import re
 import sys
+import urllib.parse
+
+# Original HSCIC example files are linked to, not displayed
+REPO_BLOB = "https://github.com/nw-gmsa/IHEUK-PAM-Unofficial/blob/main/"
 
 NHS_AA = "NHS&2.16.840.1.113883.2.1.4.1&ISO"
 SEX = {"1": "M", "2": "F", "0": "U", "9": "A"}
 NAME_TYPE = {"PREFERRED": "N", "PREVIOUS-BIRTH": "B", "PREVIOUS-MAIDEN": "M", "PREVIOUS": "U", "PREVIOUS-BACHELOR": "U"}
+
+# Identifiers in the HSCIC examples that are, or could be, real people's identifiers (both NHS Numbers pass the
+# NHS Number check digit, and 111111111 resembles 1111111111, which has caused data incidents). They are replaced,
+# in both the v2.4 and the v2.5.1 versions, with NHS England EDI test patients from
+# https://nw-gmsa.github.io/en/testing.html and a fictitious staff ID. Applied in order, as plain text replacements.
+SUBSTITUTIONS = [
+    # Patient Fredrica SMITH -> EDITESTPATIENT TEN (999 999 9557, F, DOB 1980-01-01, RG12 9AX)
+    ("3333333333", "9999999557"),
+    ("SMITH^FREDRICA^J^^MRS^^L", "EDITESTPATIENT^TEN^^^MRS^^L"),
+    ("SMITH^ALBERT^J^^MR^^L", "EDITESTPATIENT^ALBERT^^^MR^^L"),
+    ("SMITH^FRANCESCA^^^MRS^^L", "EDITESTPATIENT^FRANCESCA^^^MRS^^L"),
+    # Date of birth: keep the time, and keep the month-13 error of the original 196513121515
+    ("196512131515", "198001011515"),
+    ("196512272112", "198001012112"),
+    ("196513121515", "198013011515"),
+    ("29 WEST AVENUE^BURYTHORPE^MALTON^NORTH YORKSHIRE^YO32 5TT^GBR^H", "1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H"),
+    # Patient Sally Jones (visit query response) -> EDITESTPATIENT ELEVEN (999 999 9565, F)
+    ("4010232137", "9999999565"),
+    ("Jones^Sally^^^MRS^^L", "EDITESTPATIENT^ELEVEN^^^MRS^^L"),
+    # Operator (receptionist) Emily Cortana: staff ID only; the name is kept
+    ("111111111", "OP000123"),
+    # Scenario text
+    ("Mrs Fredrica Smith", "Mrs Ten Editestpatient"),
+    ("Mrs F Smith", "Mrs T Editestpatient"),
+    ("Mrs Francesca Smith", "Mrs Francesca Editestpatient"),
+    ("Mrs. Smith", "Mrs Editestpatient"),
+    ("Mrs Smith", "Mrs Editestpatient"),
+    ("Mr Smith", "Mr Editestpatient"),
+]
+
+
+def pseudonymise(text):
+    for old, new in SUBSTITUTIONS:
+        text = text.replace(old, new)
+    return text
+
+
+# ICD-10 codes used in the HSCIC examples that are not in current WHO ICD-10
+# (K35.0 was replaced by K35.2/K35.3 in the 2010 update)
+RETIRED_ICD10 = {"K35.0"}
+
+# Main Specialty codes that are "not a Treatment Function" in NHS England's Treatment Function CodeSystem
+# (https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function, uk.nhsdigital.r4 2.11.0)
+NOT_TREATMENT_FUNCTION = {"312", "500", "600", "810", "820", "821", "823", "824", "830", "831", "900", "901", "950", "960"}
+
+# folder -> short name used in the ids of the generated FHIR Message examples (scripts/hscic_v2_to_fhir.py)
+ABBR = {
+    "PatientIdentityManagement": "identity",
+    "PatientIdentityManagementUpdateMaster": "identity-master",
+    "PatientEncounterManagement": "encounter",
+    "PatientEncounterManagementMaster": "encounter-master",
+    "InpatientOutpatientEncounterManagement": "inout",
+    "InpatientOutpatientEncounterManagementUpdateMaster": "inout-master",
+    "PendingEncounterManagement": "pending",
+    "AdvancedEncounterManagement": "advanced",
+}
+
+
+def bundle_id(folder, event):
+    return f"hscic-{event.lower()}-{ABBR[folder]}"
+
 
 # (folder, title, description) in the order shown on the page
 SECTIONS = [
@@ -209,6 +274,8 @@ def convert(segs, event):
                 put(f, 20, lang_fix(get(f, 20), "NK1-20", changes))
         elif sid == "PV1":
             put(f, 10, is_fix(get(f, 10), "PV1-10", changes))
+            if get(f, 10) in NOT_TREATMENT_FUNCTION:
+                issues.append(f"PV1-10 Hospital Service `{get(f, 10)}` is a Main Specialty Code, not a Treatment Function Code")
             put(f, 14, is_fix(get(f, 14), "PV1-14", changes))
             if get(f, 19):
                 put(f, 19, cx_fix(get(f, 19), "VN", "PV1-19", changes))
@@ -220,6 +287,10 @@ def convert(segs, event):
                 put(f, 5, cx_fix(get(f, 5), "VN", "MRG-5", changes))
                 if event == "A40":
                     issues.append("MRG-5 Prior Visit Number is valued; HSCIC ITK 5.9 says it is only valued in A42")
+        elif sid == "DG1":
+            code = get(f, 3).split("^")[0]
+            if code in RETIRED_ICD10:
+                issues.append(f"DG1-3 ICD-10 code `{code}` is not in current WHO ICD-10 (retired in the 2010 update)")
         elif sid == "QPD":
             q = comps(get(f, 1))
             if event == "Q21" and q and q[0] == "Q22":
@@ -251,8 +322,12 @@ def event_of(segs):
 def scenario_for(example):
     for p in sorted(example.parent.iterdir()):
         if "scenario" in p.name.lower() and p.suffix.lower() == ".txt":
-            return " ".join(segments(read_text(p)))
+            return pseudonymise(" ".join(segments(read_text(p))))
     return ""
+
+
+def link(path):
+    return REPO_BLOB + urllib.parse.quote(path.as_posix())
 
 
 def code(lines):
@@ -263,17 +338,37 @@ def main(src, dest):
     root = pathlib.Path(src)
     md = []
     md.append("""<div class="alert alert-info">
-These examples are the <b>HSCIC ITK HL7 v2 ADT example messages</b> (HL7 v2.4), published with the HSCIC ITK specifications. Each one is shown in its original form and then converted to <b>HL7 v2.5.1</b> using the rules in <a href="hscic-changes.html">Changes from HSCIC ITK v2.4</a>. They are <b>not</b> converted to FHIR; see <a href="testing.html">Testing and Example Messages</a> for FHIR examples.
+These examples are the <b>HSCIC ITK HL7 v2 ADT example messages</b> (HL7 v2.4), published with the HSCIC ITK specifications. Each one links to the original HSCIC v2.4 message in the source repository and shows its conversion to <b>HL7 v2.5.1</b> using the rules in <a href="hscic-changes.html">Changes from HSCIC ITK v2.4</a>. Each ADT example also links to its <b>FHIR Message</b> equivalent, generated from the v2.5.1 conversion using the <a href="v2-fhir-mapping.html">HL7 v2 to FHIR Mapping</a>.
 </div>
 
 The conversion changes only what the move to v2.5.1 and IHE PAM requires. Under each example:
 
 - **Changes** lists every field changed by the conversion.
-- **Issues in the original** lists problems in the HSCIC example that are *not* version related. These are left unchanged, so that the converted message can still be compared directly with the original.
+- **Issues in the original** lists problems in the HSCIC example that are *not* version related. These are left unchanged in the conversion, so that it can be compared directly with the original.
 
-The examples are about one fictitious patient, Mrs Fredrica SMITH (test NHS Number `3333333333`), at York Hospital (`RCB`). Segments are shown one per line; on the wire each segment ends with `<cr>`. The HSCIC v2 XML encodings of the v2.4 examples are held in `Specifications/HSCIC/HL7 v2 ADT Examples` in the source repository.
+The examples are about one patient at York Hospital (`RCB`). Segments are shown one per line; on the wire each segment ends with `<cr>`. The HSCIC v2 XML encodings of the v2.4 examples are held in `Specifications/HSCIC/HL7 v2 ADT Examples` in the source repository.
 
-Not converted:
+<div class="alert alert-danger">
+<b>Test identifiers replaced.</b> The patient identifiers in the HSCIC examples (NHS Numbers <code>3333333333</code> and <code>4010232137</code>) pass the NHS Number check digit and could belong to real people. The 9-digit staff ID <code>111111111</code> resembles <code>1111111111</code>, which has caused data incidents. In the v2.5.1 conversions below they are replaced with <a href="https://nw-gmsa.github.io/en/testing.html">NHS England EDI test patients</a>. The linked original files still contain them: do not use the original identifiers for testing.
+</div>
+
+| HSCIC original | Replaced with |
+|----------------|---------------|
+| Patient `3333333333` SMITH^FREDRICA, DOB 1965-12-13, 29 West Avenue, Malton YO32 5TT | `9999999557` EDITESTPATIENT^TEN, DOB 1980-01-01 (time kept), 1 Test Street, Bracknell RG12 9AX |
+| Next of kin SMITH^ALBERT / SMITH^FRANCESCA | EDITESTPATIENT^ALBERT / EDITESTPATIENT^FRANCESCA |
+| Patient `4010232137` Jones^Sally (visit query) | `9999999565` EDITESTPATIENT^ELEVEN |
+| Operator ID `111111111` (receptionist Cortana^Emily) | `OP000123` (name Cortana^Emily kept) |
+{:.grid}
+
+FHIR Messages (generated by `scripts/hscic_v2_to_fhir.py`):
+
+- Times get the Europe/London offset (GMT or BST) that applied on the date, because FHIR dateTimes need a time zone.
+- Local identifiers (MRN, visit number, ward, staff ID, message control ID) have only a local namespace in the HSCIC examples and no known OID, so `Identifier.system` is omitted. They are qualified by type and assigner (ODS code) instead.
+- PV1-10 is coded with NHS England's Treatment Function Code system; a code that is not a Treatment Function (e.g. `500`) is carried as text.
+- OPCS-4 procedure codes are carried as `code.text`, because OPCS-4 has no agreed FHIR code system URI in HL7 Terminology.
+- Not mapped: OBX, ZU3, ZU4, ZU6, ZU7, ZU8, PV1-36 (Discharge Disposition) and PID-17 (Religion), and invalid dates in the originals.
+
+Not converted in v2.5.1:
 
 - Time zones (`+ZZZZ`) are not added to TS values, because the originals do not give the offset. Senders **should** include it in v2.5.1.
 - XTN-2/XTN-3 (use and equipment type) are not added to telephone numbers, because the type cannot be inferred.
@@ -290,11 +385,14 @@ Not converted:
             continue
         md.append(f"### {title}\n\n{desc}\n")
         for p in files:
-            segs = segments(read_text(p))
+            original = segments(read_text(p))
+            segs = segments(pseudonymise(read_text(p)))
             if not segs or not segs[0].startswith("MSH"):
                 continue
             ev, mtype = event_of(segs)
-            v251, changes, issues = convert(segs, ev)
+            v251, changes, _ = convert(segs, ev)
+            # issues describe the linked original, so they are taken from the unmodified file
+            _, _, issues = convert(original, ev)
             name = p.parent.name if folder != "QueryPatient" else f"{p.parent.name} {p.stem}"
             name = re.sub(r"\s*ADT-A\d\d$", "", name)
             name = re.sub(r"([a-z])([A-Z])", r"\1 \2", name)
@@ -302,10 +400,16 @@ Not converted:
             sc = scenario_for(p) if folder != "QueryPatient" else ""
             if sc:
                 md.append(f"*Scenario:* {sc}\n")
-            md.append("**HL7 v2.4 (HSCIC ITK original)**\n")
-            md.append(code(segs))
+            links = [f"[ER7]({link(p)})"]
+            xml = [x for x in p.parent.iterdir() if x.suffix.lower() == ".xml" and (folder != "QueryPatient" or x.stem == p.stem)]
+            if xml:
+                links.append(f"[v2 XML]({link(xml[0])})")
+            md.append(f"HSCIC ITK original (HL7 v2.4): {', '.join(links)}\n")
             md.append("**HL7 v2.5.1**\n")
             md.append(code(v251))
+            if folder in ABBR and mtype.startswith("ADT"):
+                bid = bundle_id(folder, ev)
+                md.append(f"**FHIR Message:** [{bid}](Bundle-{bid}.html)\n")
             if changes:
                 md.append("Changes:\n\n" + "\n".join(f"- {c}" for c in changes) + "\n")
             if issues:

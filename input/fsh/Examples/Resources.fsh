@@ -43,8 +43,7 @@ InstanceOf:  PAMLocation
 Title:       "Location - Ward W12 Bed 3"
 Description: "PV1-3 Assigned Patient Location ^W12^3^RW3MR (point of care, ward, bed, facility)"
 Usage:       #example
-* identifier[+].system = "https://fhir.example-trust.nhs.uk/Id/ward-code"
-* identifier[=].value = "W12"
+* identifier[+].value = "W12"
 * name = "Ward 12"
 * physicalType = http://terminology.hl7.org/CodeSystem/location-physical-type#wa
 * managingOrganization.identifier.system = $ods-code
@@ -62,7 +61,6 @@ Usage:       #example
 * identifier[nhsNumber].value = "9449305552"
 * identifier[nhsNumber].extension[+].url = $UKCore-NHSNumberVerificationStatus
 * identifier[nhsNumber].extension[=].valueCodeableConcept = $UKCore-NHSNumberVerificationStatusEngland#01 "Number present and verified"
-* identifier[localPatientIdentifier].system = "https://fhir.example-trust.nhs.uk/Id/mrn"
 * identifier[localPatientIdentifier].value = "MRN123456"
 * identifier[localPatientIdentifier].assigner.identifier.system = $ods-code
 * identifier[localPatientIdentifier].assigner.identifier.value = "R0A"
@@ -109,12 +107,12 @@ Description: "PV1/PV2/ZU1 for an emergency inpatient admission via A&E"
 Usage:       #example
 * extension[decisionToAdmit].valueDateTime = "2026-11-20T09:45:00Z"
 * extension[intendedManagement].valueCodeableConcept = IntendedManagementCS#1 "Patient to stay in hospital for at least one night"
-* identifier[visitNumber].system = "https://fhir.example-trust.nhs.uk/Id/visit-number"
 * identifier[visitNumber].value = "V0001234"
 * identifier[visitNumber].assigner.identifier.system = $ods-code
 * identifier[visitNumber].assigner.identifier.value = "R0A"
 * status = #in-progress
 * class = $v3-ActCode#IMP "inpatient encounter"
+* serviceType.coding[+] = $NHSTreatmentFunction#300
 * subject = Reference(Patient-OctaviaCHISLETT-9449305552)
 * participant[consultingDoctor].individual = Reference(Practitioner-C1234567)
 * participant[admittingDoctor].individual = Reference(Practitioner-C1234567)
@@ -132,7 +130,6 @@ InstanceOf:  PAMEncounter
 Title:       "Encounter - Discharged (A03)"
 Description: "PV1 for the same inpatient spell after discharge"
 Usage:       #example
-* identifier[visitNumber].system = "https://fhir.example-trust.nhs.uk/Id/visit-number"
 * identifier[visitNumber].value = "V0001234"
 * identifier[visitNumber].assigner.identifier.system = $ods-code
 * identifier[visitNumber].assigner.identifier.value = "R0A"
@@ -170,7 +167,6 @@ Title:       "Patient - Non-surviving duplicate (A40)"
 Description: "The duplicate record (MRG-1) merged into Octavia CHISLETT by ADT^A40"
 Usage:       #example
 * active = false
-* identifier[localPatientIdentifier].system = "https://fhir.example-trust.nhs.uk/Id/mrn"
 * identifier[localPatientIdentifier].value = "MRN999999"
 * identifier[localPatientIdentifier].assigner.identifier.system = $ods-code
 * identifier[localPatientIdentifier].assigner.identifier.value = "R0A"
@@ -179,24 +175,5 @@ Usage:       #example
 * name[=].given[+] = "Octavia"
 * gender = #female
 * birthDate = "2008-09-20"
-* link[+].other = Reference(Patient-Merged-OctaviaCHISLETT)
+* link[+].other = Reference(Patient-OctaviaCHISLETT-9449305552)
 * link[=].type = #replaced-by
-
-Instance:    Patient-Merged-OctaviaCHISLETT
-InstanceOf:  PAMPatient
-Title:       "Patient - Surviving record after merge (A40)"
-Description: "Surviving patient (PID) of an ADT^A40 merge, with link to the non-surviving record (MRG-1)"
-Usage:       #example
-* identifier[nhsNumber].system = $nhs-number
-* identifier[nhsNumber].value = "9449305552"
-* identifier[localPatientIdentifier].system = "https://fhir.example-trust.nhs.uk/Id/mrn"
-* identifier[localPatientIdentifier].value = "MRN123456"
-* identifier[localPatientIdentifier].assigner.identifier.system = $ods-code
-* identifier[localPatientIdentifier].assigner.identifier.value = "R0A"
-* name[+].use = #official
-* name[=].family = "CHISLETT"
-* name[=].given[+] = "Octavia"
-* gender = #female
-* birthDate = "2008-09-20"
-* link[+].other = Reference(Patient-Duplicate-MRN999999)
-* link[=].type = #replaces

@@ -66,7 +66,7 @@ flowchart LR
 
 | v2.5.1 | FHIR | Notes |
 |--------|------|-------|
-| CX | Identifier | CX-1 → value; CX-4 → system (`NHS` → `https://fhir.nhs.uk/Id/nhs-number`; local authorities → agreed URI); CX-5 → type; CX-6 → assigner.identifier (ODS) |
+| CX | Identifier | CX-1 → value; CX-4 → system (`NHS` → `https://fhir.nhs.uk/Id/nhs-number`; HD-2 Universal ID → `urn:oid:<OID>`; local HD-1 namespace only → system omitted, no URI is invented); CX-5 → type; CX-6 → assigner.identifier (ODS) |
 | XPN | HumanName | XPN-1 → family; XPN-2, XPN-3 → given; XPN-4 → suffix; XPN-5 → prefix; XPN-7 → use ([ConceptMap](ConceptMap-HSCICNameTypeToFHIR.html)) |
 | XAD | Address | XAD-1, XAD-2 → line; XAD-3 → city; XAD-4 → district; XAD-5 → postalCode; XAD-6 → country; XAD-7 → use/type ([ConceptMap](ConceptMap-HSCICAddressTypeToFHIR.html)) |
 | XTN | ContactPoint | XTN-1 / XTN-12 → value; XTN-2 → use (PRN → home, WPN → work, ORN + CP → mobile); XTN-3 → system (PH/CP → phone, FX → fax, Internet → email); XTN-4 → value (email) |

@@ -8,7 +8,7 @@ Core data contract for HL7 v2.5.1 `CX` (Extended Composite ID with Check Digit) 
 | CX | Component | FHIR |
 |----|-----------|------|
 | CX-1 | ID Number | `value` |
-| CX-4 | Assigning Authority (HD) | `system` (HD-2 Universal ID as `urn:oid:` or a URI from HD-1 local namespace) |
+| CX-4 | Assigning Authority (HD) | `system`: an established identifier system URI (e.g. `https://fhir.nhs.uk/Id/nhs-number`), or the HD-2 Universal ID as `urn:oid:<OID>`. If only a local HD-1 namespace is known, `system` is omitted - **do not invent a URI** |
 | CX-5 | Identifier Type Code | `type` (HL7 Table 0203) |
 | CX-6 | Assigning Facility (HD) | `assigner.identifier` (ODS code) |
 {:.grid}
@@ -16,8 +16,9 @@ Core data contract for HL7 v2.5.1 `CX` (Extended Composite ID with Check Digit) 
 
 * type 0..1 MS
 * type ^short = "CX-5 Identifier Type Code (HL7 Table 0203)"
-* system 1..1 MS
-* system ^short = "CX-4 Assigning Authority"
+* system 0..1 MS
+* system ^short = "CX-4 Assigning Authority: established URI, or urn:oid: of HD-2. Omit if only a local namespace is known"
+* system ^comment = "Do not invent identifier system URIs. Use an established system (e.g. NHS Number, ODS code) or the OID of the assigning authority (HD-2 Universal ID, e.g. the OID of a Trust's EPR) as urn:oid:. Where only a local namespace (HD-1) is known, omit system; the identifier is then qualified by type (CX-5) and assigner (CX-6 ODS code)."
 * value 1..1 MS
 * value ^short = "CX-1 ID Number. MUST be unique within the assigning authority"
 * assigner 0..1 MS
@@ -71,7 +72,7 @@ Description:    """
 Local hospital / PAS patient number (`PID-3`, `CX-5` = `MR`). The assigning authority (`CX-4`) is the local system code, which requires mutual agreement between participating systems (HSCIC Table 0363). The assigning facility is the ODS code of the organisation.
 """
 * type = $v2-0203#MR
-* system ^short = "CX-4 Assigning Authority. Locally defined, e.g. https://fhir.example-trust.nhs.uk/Id/mrn or urn:oid:..."
+* system ^short = "CX-4 Assigning Authority, e.g. urn:oid: of the Trust PAS/EPR. Omit if no OID is known"
 * assigner 1..1
 
 Profile:        TemporaryPatientIdentifier

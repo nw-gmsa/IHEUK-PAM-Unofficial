@@ -17,7 +17,7 @@ Usage: RE in the encounter messages (ITI-31), O in A28/A31.
 | 3 | Coding Status | IS | ZU010 | | not mapped |
 | 4 | Consultant Episode start Date/Time | TS | | | Encounter (consultant episode, PV1-50).period.start |
 | 5 | Consultant Episode end Date/Time | TS | | | Encounter (consultant episode).period.end |
-| 6 | Consultant's main specialty | CE | ZU012 | May differ from the treatment specialty (PV1-10) | PractitionerRole.specialty |
+| 6 | Consultant's main specialty | CE | ZU012 | [Main Specialty Code](https://www.datadictionary.nhs.uk/attributes/main_specialty_code.html). May differ from the treatment function (PV1-10) | PractitionerRole.specialty (`https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-clinical-specialty`, OID `2.16.840.1.113883.2.1.3.2.4.16.64`) |
 | 9 | Neonatal level of care | CE | ZU020 | | not mapped |
 | 10 | Overseas Visitor Status | CE | 0171 | Use this field, not PID-26 | Patient extension:overseasVisitorStatus |
 | 13 | Source of Referral | CE | ZU035 | | ServiceRequest (referral) |
