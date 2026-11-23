@@ -25,6 +25,9 @@ dependencies:
   fhir.r4.ukcore.stu3.currentbuild:
     version: 0.29.0-pre-release
   hl7.fhir.extensions.r5: 4.0.1
+  ihe.iti.pdqm: 3.2.0
+  ihe.iti.pixm: 3.1.0
+  ihe.iti.pmir: 1.6.0
 
 FSHOnly: false
 parameters:
@@ -66,6 +69,12 @@ pages:
     title: Patient Administration Management (PAM)
   PIX.md:
     title: Patient Identifier Cross-referencing (PIX)
+  PDQm.md:
+    title: Patient Demographics Query for Mobile (PDQm)
+  PIXm.md:
+    title: Patient Identifier Cross-reference for Mobile (PIXm)
+  PMIR.md:
+    title: Patient Master Identity Registry (PMIR)
   ITI-30.md:
     title: Patient Identity Management [ITI-30]
   ITI-31.md:
@@ -93,6 +102,9 @@ menu:
     Overview: overview.html
     Patient Administration Management (PAM): PAM.html
     Patient Identifier Cross-referencing (PIX): PIX.html
+    Patient Demographics Query for Mobile (PDQm): PDQm.html
+    Patient Identifier Cross-reference for Mobile (PIXm): PIXm.html
+    Patient Master Identity Registry (PMIR): PMIR.html
   Volume 2 (Transactions):
     Patient Identity Management [ITI-30]: ITI-30.html
     Patient Encounter Management [ITI-31]: ITI-31.html

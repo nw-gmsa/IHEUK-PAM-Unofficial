@@ -21,6 +21,8 @@ Unofficial IHE UK national extension of IHE ITI **Patient Administration Managem
 - `input/fsh/Extensions/` - ZU segment / PV2 fields with no FHIR R4 element.
 - `input/fsh/Terminology/` - HSCIC tables not in UK Core (CodeSystems + ValueSets), ConceptMaps HL7 v2 tables → NHS DD / FHIR.
 - `input/fsh/MessageDefinition/` - one MessageDefinition per HSCIC trigger event (generated from a list; keep in sync with `ITI-30.md`/`ITI-31.md` tables and `CapabilityStatement/`).
+- `input/fsh/Examples/Mobile.fsh` - PDQm/PIXm/PMIR examples (IHE packages `ihe.iti.pdqm`, `ihe.iti.pixm`, `ihe.iti.pmir`); they reuse the generated shared HSCIC patient. IHE.PDQm.Patient requires `identifier.system`, so only identifiers with a known system/OID can be used there.
+- `input/resources/` - NHS England Treatment Function / Main Specialty CodeSystems and ValueSets copied from the deprecated `uk.nhsdigital.r4` 2.11.0 (canonicals kept via `special-url`).
 - `input/pagecontent/` - narrative. v2 segment tables are in `hl7v2-segments.md` / `hl7v2-zsegments.md`; HSCIC→v2.5.1 deltas in `hscic-changes.md`.
 - Each profile has a FSH `Mapping:` block (`Id: hl7v2`) giving the v2 field per element - keep these aligned with the segment tables.
 

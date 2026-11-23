@@ -10,6 +10,9 @@ This Implementation Guide is a **UK national extension** of two IHE IT Infrastru
 |-------------|-------------------------|------------|
 | Patient Administration Management (PAM) | [ITI TF-1: 14](https://profiles.ihe.net/ITI/TF/Volume1/ch-14.html) | [PAM](PAM.html), [ITI-30](ITI-30.html), [ITI-31](ITI-31.html) |
 | Patient Identifier Cross-referencing (PIX) | [ITI TF-1: 5](https://profiles.ihe.net/ITI/TF/Volume1/ch-5.html) | [PIX](PIX.html) |
+| Patient Demographics Query for Mobile (PDQm) | [PDQm 3.2.0](https://profiles.ihe.net/ITI/PDQm/) | [PDQm](PDQm.html) |
+| Patient Identifier Cross-reference for Mobile (PIXm) | [PIXm 3.1.0](https://profiles.ihe.net/ITI/PIXm/) | [PIXm](PIXm.html) |
+| Patient Master Identity Registry (PMIR) | [PMIR 1.6.0](https://profiles.ihe.net/ITI/PMIR/) | [PMIR](PMIR.html) |
 {:.grid}
 
 It brings together, in one place:
@@ -44,12 +47,12 @@ flowchart LR
 
 Out of scope for this version:
 
-- The HSCIC ITK queries (QBP^Q21 Get Person Demographics, QBP^Q22 Find Candidates, QBP^ZV1 Patient Demographics and Visit Query) are IHE [Patient Demographics Query (PDQ)](https://profiles.ihe.net/ITI/TF/Volume1/ch-8.html) transactions ITI-21 and ITI-22. They are only referenced here. The FHIR equivalent is [PDQm](https://profiles.ihe.net/ITI/PDQm/).
+- The HL7 v2 HSCIC ITK queries (QBP^Q21 Get Person Demographics, QBP^Q22 Find Candidates, QBP^ZV1 Patient Demographics and Visit Query) are IHE [Patient Demographics Query (PDQ)](https://profiles.ihe.net/ITI/TF/Volume1/ch-8.html) transactions ITI-21 and ITI-22, which are not profiled. Their FHIR equivalents are covered by [PDQm](PDQm.html).
 - HSCIC ITK transport (ITK web services / SOAP wrappers). This guide assumes MLLP for HL7 v2 and FHIR Messaging ($process-message) for FHIR.
 
 ### Contents
 
-- **Volume 1 - Profiles:** [Overview](overview.html), [PAM](PAM.html), [PIX](PIX.html)
+- **Volume 1 - Profiles:** [Overview](overview.html), [PAM](PAM.html), [PIX](PIX.html), [PDQm](PDQm.html), [PIXm](PIXm.html), [PMIR](PMIR.html)
 - **Volume 2 - Transactions:** [ITI-30](ITI-30.html), [ITI-31](ITI-31.html), [HL7 v2.5.1 Conventions](hl7v2.html), [Segment Definitions](hl7v2-segments.html), [UK Z Segments](hl7v2-zsegments.html)
 - **Volume 3 - Content:** [HL7 v2 to FHIR Mapping](v2-fhir-mapping.html), [Terminology](terminology.html), profiles such as [PAM Patient](StructureDefinition-PAMPatient.html) and [PAM Encounter](StructureDefinition-PAMEncounter.html)
 - **Supporting:** [Changes from HSCIC ITK v2.4](hscic-changes.html), [Testing and Example Messages](testing.html), [HSCIC ITK Example Messages](hscic-examples.html), [Artifacts](artifacts.html)

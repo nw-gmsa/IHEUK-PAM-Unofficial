@@ -34,7 +34,7 @@ All PIX actors **shall** be grouped with Consistent Time (CT).
 
 #### FHIR
 
-The FHIR equivalent is [IHE PIXm](https://profiles.ihe.net/ITI/PIXm/) (ITI-83 `$ihe-pix`) and, for the feed, [IHE PMIR](https://profiles.ihe.net/ITI/PMIR/) (ITI-93 Mobile Patient Identity Feed). A PMIR feed is a FHIR message that uses the same patient-merge semantics as [ADT^A40](MessageDefinition-ADT-A40.html). The [PAM Patient](StructureDefinition-PAMPatient.html) profile identifier slices (`nhsNumber`, `localPatientIdentifier`) are the identifiers that `$ihe-pix` would return.
+The FHIR equivalent is [PIXm](PIXm.html) (ITI-83 `$ihe-pix`, ITI-104 Patient Identity Feed FHIR) and, for a master identity registry with subscriptions, [PMIR](PMIR.html) (ITI-93 Mobile Patient Identity Feed, ITI-94 Subscribe to Patient Updates). A PMIR feed is a FHIR message that uses the same patient-merge semantics as [ADT^A40](MessageDefinition-ADT-A40.html). The [PAM Patient](StructureDefinition-PAMPatient.html) profile identifier slices (`nhsNumber`, `localPatientIdentifier`) are the identifiers that `$ihe-pix` would return.
 
 ### Options
 

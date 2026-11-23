@@ -42,7 +42,8 @@ IHE PAM separates two concerns, which HSCIC ITK mixed together in one list of AD
 |---------|-----------------|------------------|----------------|
 | Who the patient is | [Patient Identity Management [ITI-30]](ITI-30.html) | 3.1.4 Patient Identity Management | A28, A31, A40 |
 | What is happening to the patient | [Patient Encounter Management [ITI-31]](ITI-31.html) | 3.1.1 Basic, 3.1.2 Advanced, 3.1.3 Further Advanced | A01-A16, A21, A22, A25-A27, A38, A52, A53 (and A08) |
-| Finding a patient | PDQ ITI-21 / ITI-22 (out of scope) | 3.1.5 Patient Demographic and Visit Query | Q21/K21, Q22/K22, ZV1/ZV2 |
+| Finding a patient | PDQ ITI-21 / ITI-22 (v2, not profiled); [PDQm](PDQm.html) ITI-78 / ITI-119 (FHIR) | 3.1.5 Patient Demographic and Visit Query | Q21/K21, Q22/K22, ZV1/ZV2 |
+| Cross-referencing and master identity (FHIR) | [PIXm](PIXm.html) ITI-83 / ITI-104; [PMIR](PMIR.html) ITI-93 / ITI-94 | - | (A28, A31, A40 as FHIR feeds) |
 {:.grid}
 
 ### FHIR
