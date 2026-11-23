@@ -77,6 +77,8 @@ pages:
     title: Changes from HSCIC ITK v2.4
   testing.md:
     title: Testing and Example Messages
+  hscic-examples.md:
+    title: HSCIC ITK Example Messages (v2.4 and v2.5.1)
 
 menu:
   Home: index.html
@@ -100,4 +102,5 @@ menu:
   Supporting:
     Changes from HSCIC ITK v2.4: hscic-changes.html
     Testing and Example Messages: testing.html
+    HSCIC ITK Example Messages: hscic-examples.html
     Artifacts: artifacts.html

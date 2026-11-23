@@ -31,6 +31,8 @@ This page lists the changes made to the HSCIC ITK HL7 v2 Message Specification (
 | 23 | Transport | ITK web services | MLLP (v2) and FHIR Messaging. ITK transport is out of scope | - |
 {:.grid}
 
+Each of these rules is applied to the original HSCIC ITK example messages on [HSCIC ITK Example Messages](hscic-examples.html).
+
 ### Unchanged
 
 The following HSCIC ITK rules carry forward without change:

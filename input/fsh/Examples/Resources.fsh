@@ -56,7 +56,7 @@ Title:       "Patient - Octavia CHISLETT"
 Description: "Patient demographics (PID, PD1) for test NHS Number 9449305552."
 Usage:       #example
 * extension[+].url = $UKCore-EthnicCategory
-* extension[=].valueCodeableConcept = $UKCore-EthnicCategoryEngland#A "British, Mixed British"
+* extension[=].valueCodeableConcept = $UKCore-EthnicCategoryEngland#A "White - British"
 * extension[locationHiding].valueCodeableConcept = LocationHidingCS#0 "No location hiding"
 * identifier[nhsNumber].system = $nhs-number
 * identifier[nhsNumber].value = "9449305552"
@@ -121,7 +121,7 @@ Usage:       #example
 * period.start = "2026-11-20T10:15:00Z"
 * hospitalization.extension[+].url = $UKCore-AdmissionMethod
 * hospitalization.extension[=].valueCodeableConcept = $UKCore-AdmissionMethodEngland#21 "Emergency Admission: Emergency Care Department or dental casualty department of the Health Care Provider"
-* hospitalization.admitSource = $UKCore-SourceOfAdmissionEngland#19 "Usual place of residence"
+* hospitalization.admitSource = $UKCore-SourceOfAdmissionEngland#19
 * location[+].location = Reference(Location-Ward-W12)
 * location[=].status = #active
 * location[=].period.start = "2026-11-20T10:15:00Z"
@@ -146,7 +146,7 @@ Usage:       #example
 * extension[=].valueCodeableConcept = $UKCore-DischargeMethodEngland#1 "Patient discharged on clinical advice or with clinical consent"
 * hospitalization.extension[+].url = $UKCore-AdmissionMethod
 * hospitalization.extension[=].valueCodeableConcept = $UKCore-AdmissionMethodEngland#21 "Emergency Admission: Emergency Care Department or dental casualty department of the Health Care Provider"
-* hospitalization.dischargeDisposition = $UKCore-DischargeDestinationEngland#19 "Usual place of residence"
+* hospitalization.dischargeDisposition = $UKCore-DischargeDestinationEngland#19
 * location[+].location = Reference(Location-Ward-W12)
 * location[=].status = #completed
 * location[=].period.start = "2026-11-20T10:15:00Z"
@@ -179,7 +179,7 @@ Usage:       #example
 * name[=].given[+] = "Octavia"
 * gender = #female
 * birthDate = "2008-09-20"
-* link[+].other = Reference(Patient-OctaviaCHISLETT-9449305552)
+* link[+].other = Reference(Patient-Merged-OctaviaCHISLETT)
 * link[=].type = #replaced-by
 
 Instance:    Patient-Merged-OctaviaCHISLETT

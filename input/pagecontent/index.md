@@ -52,7 +52,7 @@ Out of scope for this version:
 - **Volume 1 - Profiles:** [Overview](overview.html), [PAM](PAM.html), [PIX](PIX.html)
 - **Volume 2 - Transactions:** [ITI-30](ITI-30.html), [ITI-31](ITI-31.html), [HL7 v2.5.1 Conventions](hl7v2.html), [Segment Definitions](hl7v2-segments.html), [UK Z Segments](hl7v2-zsegments.html)
 - **Volume 3 - Content:** [HL7 v2 to FHIR Mapping](v2-fhir-mapping.html), [Terminology](terminology.html), profiles such as [PAM Patient](StructureDefinition-PAMPatient.html) and [PAM Encounter](StructureDefinition-PAMEncounter.html)
-- **Supporting:** [Changes from HSCIC ITK v2.4](hscic-changes.html), [Testing and Example Messages](testing.html), [Artifacts](artifacts.html)
+- **Supporting:** [Changes from HSCIC ITK v2.4](hscic-changes.html), [Testing and Example Messages](testing.html), [HSCIC ITK Example Messages](hscic-examples.html), [Artifacts](artifacts.html)
 
 ### Dependencies
 

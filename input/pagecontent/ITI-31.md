@@ -42,7 +42,7 @@ The table lists every HSCIC ITK trigger event with its IHE option. It also gives
 | A40 | ADT^A40^ADT_A39 | Merge two patients | Maintain Demographics | 4.27 | - | see [ITI-30](ITI-30.html) |
 {:.grid}
 
-A MessageDefinition is published for each event: see [Artifacts](artifacts.html#structures-message-definitions). IHE events not defined by HSCIC ITK (A06, A07, A09, A10, A32, A33, A44, A54, A55, Z99) follow ITI TF-2 unchanged.
+A MessageDefinition is published for each event: see [Artifacts](artifacts.html). IHE events not defined by HSCIC ITK (A06, A07, A09, A10, A32, A33, A44, A54, A55, Z99) follow ITI TF-2 unchanged.
 
 <div class="alert alert-info">
 <b>A08 semantics:</b> HSCIC ITK titles A08 "Update Encounter Information". IHE restricts A08 within ITI-31 to updating information related to the <i>current encounter</i>, including the demographics in it. Pure patient (non-encounter) updates <b>shall</b> be sent as <a href="ITI-30.html">ITI-30</a> A31.

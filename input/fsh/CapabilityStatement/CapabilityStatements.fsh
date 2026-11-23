@@ -1,10 +1,10 @@
 Instance:   PAMPatientDemographicsSupplier
 InstanceOf: CapabilityStatement
-Title:      "Patient Demographics Supplier"
+Title:      "Patient Demographics Supplier Requirements"
 Usage:      #definition
 * url = "https://fhir.ihe-uk.org/ITI/PAM/CapabilityStatement/PAMPatientDemographicsSupplier"
 * name = "PAMPatientDemographicsSupplier"
-* title = "Patient Demographics Supplier"
+* title = "Patient Demographics Supplier Requirements"
 * status = #draft
 * experimental = false
 * date = "2026-11-23"
@@ -25,11 +25,11 @@ Capabilities of the IHE PAM Patient Demographics Supplier actor for Patient Iden
 
 Instance:   PAMPatientDemographicsConsumer
 InstanceOf: CapabilityStatement
-Title:      "Patient Demographics Consumer"
+Title:      "Patient Demographics Consumer Requirements"
 Usage:      #definition
 * url = "https://fhir.ihe-uk.org/ITI/PAM/CapabilityStatement/PAMPatientDemographicsConsumer"
 * name = "PAMPatientDemographicsConsumer"
-* title = "Patient Demographics Consumer"
+* title = "Patient Demographics Consumer Requirements"
 * status = #draft
 * experimental = false
 * date = "2026-11-23"
@@ -50,11 +50,11 @@ Capabilities of the IHE PAM Patient Demographics Consumer actor for Patient Iden
 
 Instance:   PAMPatientEncounterSupplier
 InstanceOf: CapabilityStatement
-Title:      "Patient Encounter Supplier"
+Title:      "Patient Encounter Supplier Requirements"
 Usage:      #definition
 * url = "https://fhir.ihe-uk.org/ITI/PAM/CapabilityStatement/PAMPatientEncounterSupplier"
 * name = "PAMPatientEncounterSupplier"
-* title = "Patient Encounter Supplier"
+* title = "Patient Encounter Supplier Requirements"
 * status = #draft
 * experimental = false
 * date = "2026-11-23"
@@ -109,11 +109,11 @@ Capabilities of the IHE PAM Patient Encounter Supplier actor for Patient Encount
 
 Instance:   PAMPatientEncounterConsumer
 InstanceOf: CapabilityStatement
-Title:      "Patient Encounter Consumer"
+Title:      "Patient Encounter Consumer Requirements"
 Usage:      #definition
 * url = "https://fhir.ihe-uk.org/ITI/PAM/CapabilityStatement/PAMPatientEncounterConsumer"
 * name = "PAMPatientEncounterConsumer"
-* title = "Patient Encounter Consumer"
+* title = "Patient Encounter Consumer Requirements"
 * status = #draft
 * experimental = false
 * date = "2026-11-23"

@@ -1,3 +1,5 @@
+<div class="alert alert-info">The original HSCIC ITK example messages (HL7 v2.4), with their HL7 v2.5.1 conversions, are on <a href="hscic-examples.html">HSCIC ITK Example Messages</a>.</div>
+
 ### Test patient
 
 The examples use the NHS test patient **Octavia CHISLETT** (NHS Number `9449305552`), as used in the [NW Genomics guide](https://nw-gmsa.github.io/en/). Organisation, practitioner and location codes are illustrative: `R0A` (Manchester University NHS Foundation Trust), and the HSCIC ITK example codes `Y00001` (GP practice) and `G1234560` (GP). Segments are shown one per line; on the wire each segment ends with `<cr>`.

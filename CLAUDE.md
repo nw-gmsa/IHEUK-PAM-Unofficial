@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Unofficial IHE UK national extension of IHE ITI **Patient Administration Management (PAM)** (ITI TF-1 ch 14, transactions ITI-30/ITI-31) and **Patient Identifier Cross-referencing (PIX)** (ITI TF-1 ch 5), modelled on the NW Genomics IHE LTW guide (`../nw-gmsa.github.com`, https://nw-gmsa.github.io/en/).
 
-- Initial content: HSCIC ITK HL7 V2 Message Specifications v1.0.15 and Reference Tables v1.0.14 (PDFs in `Specifications/HSCIC`), originally HL7 v2.4. The original HSCIC example messages (v2.4, ER7 + v2 XML) are in `Specifications/HSCIC/HL7 v2 ADT Examples/` - source material only, not published in the IG.
+- Initial content: HSCIC ITK HL7 V2 Message Specifications v1.0.15 and Reference Tables v1.0.14 (PDFs in `Specifications/HSCIC`), originally HL7 v2.4. The original HSCIC example messages (v2.4, ER7 + v2 XML) are in `Specifications/HSCIC/HL7 v2 ADT Examples/`. Their ER7 (.txt) versions, with v2.5.1 conversions, are published on `hscic-examples.md`, which is **generated** by `python3 -I scripts/convert_hscic_examples.py "Specifications/HSCIC/HL7 v2 ADT Examples" input/pagecontent/hscic-examples.md` - edit the script (it implements the `hscic-changes.md` rules), not the page.
 - Target: **HL7 v2.5.1** for v2 content; FHIR R4 profiles based on **HL7 Europe Base** (`hl7.fhir.eu.base`), with UK Core extensions/terminology.
 - `id`: `ihe.uk.iti.pam`, `canonical`: `https://fhir.ihe-uk.org/ITI/PAM` (placeholder, see `sushi-config.yaml`).
 
