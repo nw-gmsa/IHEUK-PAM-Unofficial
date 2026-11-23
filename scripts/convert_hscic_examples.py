@@ -63,6 +63,14 @@ RETIRED_ICD10 = {"K35.0"}
 # (https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function, uk.nhsdigital.r4 2.11.0)
 NOT_TREATMENT_FUNCTION = {"312", "500", "600", "810", "820", "821", "823", "824", "830", "831", "900", "901", "950", "960"}
 
+# Hospital Provider Spell number (PID-18, CX-5 AN) added to the examples used by the Example Scenario
+# "Inpatient admission, leave and discharge", to tie their visits together. Not in the HSCIC originals.
+SCENARIO_SPELL = "5000123^^^SPELLID^AN"
+SCENARIO_EXAMPLES = {
+    ("PatientEncounterManagement", "A01"), ("AdvancedEncounterManagement", "A21"), ("AdvancedEncounterManagement", "A22"),
+    ("PendingEncounterManagement", "A16"), ("PatientEncounterManagement", "A03"),
+}
+
 # folder -> short name used in the ids of the generated FHIR Message examples (scripts/hscic_v2_to_fhir.py)
 ABBR = {
     "PatientIdentityManagement": "identity",
@@ -213,7 +221,7 @@ def bad_dates(f):
                 yield n, part
 
 
-def convert(segs, event):
+def convert(segs, event, spell=None):
     changes, issues = set(), []
     out = []
     for seg in segs:
@@ -251,6 +259,9 @@ def convert(segs, event):
                 put(f, 15, lang_fix(get(f, 15), "PID-15", changes))
             if get(f, 21):
                 put(f, 21, cx_fix(get(f, 21), "MR", "PID-21", changes))
+            if spell and not get(f, 18):
+                put(f, 18, spell)
+                changes.add(f"PID-18: Hospital Provider Spell number `{spell}` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)")
             for rep in get(f, 3).split("~"):
                 c = comps(rep)
                 if len(c) >= 5 and c[4] not in ("", "NH", "MR", "PI", "VN", "AN"):
@@ -390,7 +401,8 @@ Not converted in v2.5.1:
             if not segs or not segs[0].startswith("MSH"):
                 continue
             ev, mtype = event_of(segs)
-            v251, changes, _ = convert(segs, ev)
+            spell = SCENARIO_SPELL if (folder, ev) in SCENARIO_EXAMPLES else None
+            v251, changes, _ = convert(segs, ev, spell)
             # issues describe the linked original, so they are taken from the unmodified file
             _, _, issues = convert(original, ev)
             name = p.parent.name if folder != "QueryPatient" else f"{p.parent.name} {p.stem}"

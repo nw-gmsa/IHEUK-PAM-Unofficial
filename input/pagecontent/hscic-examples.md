@@ -220,7 +220,7 @@ HSCIC ITK original (HL7 v2.4): [ER7](https://github.com/nw-gmsa/IHEUK-PAM-Unoffi
 ```
 MSH|^~\&|PAS|RCB|ROUTE|ROUTE|201010101418||ADT^A01^ADT_A01|1391320453338055|P|2.5.1|1|20101010141857|||GBR|UNICODE UTF-8|en||iTKv1.0
 EVN||201010101400|||OP000123^Cortana^Emily^^^Miss^^RCB55|201010101400
-PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|||||A|Berlin|||GBR||DEU
+PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|5000123^^^SPELLID^AN||||A|Berlin|||GBR||DEU
 PD1|||MALTON GP PRACTICE^^Y06601^^^^^^^Y06601|G5612908^Townley^Gregory^^^Dr^^^GMC
 NK1|1|EDITESTPATIENT^ALBERT^^^MR^^L|1|1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H|+441234567890||||||||||M|196311111513||||en
 PV1|1|I|RCB^OBS1^BAY2-6^RCB55|13|||C3456789^Darwin^Samuel^^^Dr^^^GMC|G5612908^Townley^Gregory^^^Dr^^^GMC|C3456789^Darwin^Samuel^^^Dr^^^GMC|300||||19|||||2139^^^VISITID^VN|||||||||||||||||||||||||201010201716
@@ -245,6 +245,7 @@ Changes:
 - PID-3: identifier type code (CX-5) `NH` added for the NHS Number
 - PID-8: NHS Person Gender Code `2` → HL7 Table 0001 `F`
 - PID-15: language `EN` → ISO 639-1 `en`
+- PID-18: Hospital Provider Spell number `5000123^^^SPELLID^AN` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)
 - PD1-3: GP Practice code copied from XON-3 to XON-10 Organization Identifier
 - NK1-15: NHS Person Gender Code `1` → HL7 Table 0001 `M`
 - NK1-20: language `EN` → ISO 639-1 `en`
@@ -266,7 +267,7 @@ HSCIC ITK original (HL7 v2.4): [ER7](https://github.com/nw-gmsa/IHEUK-PAM-Unoffi
 ```
 MSH|^~\&|PAS|RCB|ROUTE|ROUTE|201010211706||ADT^A03^ADT_A03|13403893338056|P|2.5.1|1|20101021185800|||GBR|UNICODE UTF-8|en||iTKv1.0
 EVN||201010211735|||OP000123^Cortana^Emily^^^Miss^^RCB55|201010211706
-PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|||||A|Berlin|||GBR||DEU
+PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|5000123^^^SPELLID^AN||||A|Berlin|||GBR||DEU
 PD1|||MALTON GP PRACTICE^^Y06601^^^^^^^Y06601|G5612908^Townley^Gregory^^^Dr^^^GMC
 PV1|1|I|RCB^OBS1^BAY2-6^RCB55|13|||C3456789^Darwin^Samuel^^^Dr^^^GMC|G5612908^Townley^Gregory^^^Dr^^^GMC|C3456789^Darwin^Samuel^^^Dr^^^GMC|300||||||||12|YOR123456^^^YR_VISIT^VN|||||||||||||||||3|19|01||||||201010201716|201010211706
 PV2|||ADMIT13|||||||||||||||||||||||||||||||||||C
@@ -288,6 +289,7 @@ Changes:
 - PID-3: NHS Number assigning authority `NHS` → `NHS&2.16.840.1.113883.2.1.4.1&ISO` (CX-4)
 - PID-3: identifier type code (CX-5) `NH` added for the NHS Number
 - PID-8: NHS Person Gender Code `2` → HL7 Table 0001 `F`
+- PID-18: Hospital Provider Spell number `5000123^^^SPELLID^AN` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)
 - PD1-3: GP Practice code copied from XON-3 to XON-10 Organization Identifier
 - PV1-19: identifier type code (CX-5) `VN` added
 
@@ -770,7 +772,7 @@ HSCIC ITK original (HL7 v2.4): [ER7](https://github.com/nw-gmsa/IHEUK-PAM-Unoffi
 ```
 MSH|^~\&|PAS|RCB|ROUTE|ROUTE|201004141930||ADT^A16^ADT_A16|1340389132045393|P|2.5.1||20100414193036|||GBR|UNICODE UTF-8|en||iTKv1.0
 EVN||201004141930|||OP000123^Cortana^Emily^^Miss^^RCB55|201004141930
-PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|||||A|Berlin|N||GBR||DEU||||ED
+PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|5000123^^^SPELLID^AN||||A|Berlin|N||GBR||DEU||||ED
 PD1|||MALTON GP PRACTICE^^Y06601^^^^^^^Y06601|G5612908^Townley^Gregory^^^Dr^^^GMC
 PV1|1|I|West Wing^RECOVERY_WARD^BED3^RCB55|21|||C3456789^Darwin^Samuel^^^Dr^^^GMC||C3456789^Darwin^Samuel^^^Dr^^^GMC|300||||19|A0||C3456789^Darwin^Samuel^^^Dr^^^GMC|Surgery|1114^^^RCB_VISITID^VN|||||||||||||||||||||||||201004141112||||||||
 PV2|||||||||201004151130||||||||||||||||2|||||||||||||C
@@ -790,6 +792,7 @@ Changes:
 - PID-3: identifier type code (CX-5) `NH` added for the NHS Number
 - PID-8: NHS Person Gender Code `2` → HL7 Table 0001 `F`
 - PID-15: language `EN` → ISO 639-1 `en`
+- PID-18: Hospital Provider Spell number `5000123^^^SPELLID^AN` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)
 - PD1-3: GP Practice code copied from XON-3 to XON-10 Organization Identifier
 - PV1-19: identifier type code (CX-5) `VN` added
 
@@ -935,7 +938,7 @@ HSCIC ITK original (HL7 v2.4): [ER7](https://github.com/nw-gmsa/IHEUK-PAM-Unoffi
 ```
 MSH|^~\&|PAS|RCB|ROUTE|ROUTE|201002251034||ADT^A21^ADT_A21|1340389132045390|P|2.5.1||20100225103416|||GBR|UNICODE UTF-8|en||iTKv1.0
 EVN||201002251030|||OP000123^Cortana^Emily^^Miss^^RCB55|201002251000
-PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|||||A|Berlin|N||GBR||DEU||||ED
+PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|5000123^^^SPELLID^AN||||A|Berlin|N||GBR||DEU||||ED
 PD1|||MALTON GP PRACTICE^^Y06601^^^^^^^Y06601|G5612908^Townley^Gregory^^^Dr^^^GMC
 PV1||R|West Wing^RCB-ONC^BED5^RCB55|13|||C3456789^Darwin^Samuel^^^Dr^^^GMC||C3456789^Darwin^Samuel^^^Dr^^^GMC|800|||R|19|A0|||Cancer|1164^^^VISITID^VN|||||||||||||||||||||||||201002251000||||||||
 PV2|||Continuation||||||||||||||||||||||3|||||||||||||C
@@ -955,6 +958,7 @@ Changes:
 - PID-3: identifier type code (CX-5) `NH` added for the NHS Number
 - PID-8: NHS Person Gender Code `2` → HL7 Table 0001 `F`
 - PID-15: language `EN` → ISO 639-1 `en`
+- PID-18: Hospital Provider Spell number `5000123^^^SPELLID^AN` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)
 - PD1-3: GP Practice code copied from XON-3 to XON-10 Organization Identifier
 - PV1-19: identifier type code (CX-5) `VN` added
 
@@ -975,7 +979,7 @@ HSCIC ITK original (HL7 v2.4): [ER7](https://github.com/nw-gmsa/IHEUK-PAM-Unoffi
 ```
 MSH|^~\&|PAS|RCB|ROUTE|ROUTE|201002261034||ADT^A22^ADT_A21|1340389132045390|P|2.5.1||201028101716|||GBR|UNICODE UTF-8|en||iTKv1.0
 EVN||201002261030|||OP000123^Cortana^Emily^^Miss^^RCB55|201002261000
-PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|||||A|Berlin|N||GBR||DEU||||ED
+PID|1||9999999557^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH||EDITESTPATIENT^TEN^^^MRS^^L|SCHMIDT^HELGAR^Y|198001011515|F|||1 TEST STREET^^BRACKNELL^BERKSHIRE^RG12 9AX^GBR^H||+441234567890||en|M|C22|5000123^^^SPELLID^AN||||A|Berlin|N||GBR||DEU||||ED
 PD1|||MALTON GP PRACTICE^^Y06601^^^^^^^Y06601|G5612908^Townley^Gregory^^^Dr^^^GMC
 PV1||R|West Wing^RCB-ONC^BED5^RCB55|13|||C3456789^Darwin^Samuel^^^Dr^^^GMC||C3456789^Darwin^Samuel^^^Dr^^^GMC|800|||R|19|A0|||Cancer|1164^^^VISITID^VN|||||||||||||||||||||||||201002251000||||||||
 PV2|||Continuation||||||||||||||||||||||3|||||||||||||C
@@ -995,6 +999,7 @@ Changes:
 - PID-3: identifier type code (CX-5) `NH` added for the NHS Number
 - PID-8: NHS Person Gender Code `2` → HL7 Table 0001 `F`
 - PID-15: language `EN` → ISO 639-1 `en`
+- PID-18: Hospital Provider Spell number `5000123^^^SPELLID^AN` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)
 - PD1-3: GP Practice code copied from XON-3 to XON-10 Organization Identifier
 - PV1-19: identifier type code (CX-5) `VN` added
 

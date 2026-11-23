@@ -96,6 +96,19 @@ Description:    """
 * type = $v2-0203#VN
 * assigner 1..1
 
+Profile:        HospitalProviderSpellIdentifier
+Parent:         PAMIdentifier
+Id:             HospitalProviderSpellIdentifier
+Title:          "Hospital Provider Spell Identifier"
+Description:    """
+Identifier of an NHS Data Dictionary HOSPITAL PROVIDER SPELL (admission to discharge), sent in HL7 v2 `PID-18` Patient Account Number. It ties together the visits (`PV1-19`) and events of one stay as an admitted patient.
+
+HL7 v2 Table 0203 has no Hospital Provider Spell identifier type, so `AN` (Account number) is used as an interim workaround, as in the [NHS North West Genomics guide](https://nw-gmsa.github.io/en/StructureDefinition-HospitalProviderSpellIdentifier.html). Strictly, `AN` identifies an account rather than an encounter. This binding may change.
+"""
+* type = $v2-0203#AN
+* type ^short = "AN (Account number) - interim workaround, HL7 has no Hospital Provider Spell identifier type"
+* assigner 1..1
+
 Profile:        AlternateVisitIdentifier
 Parent:         PAMIdentifier
 Id:             AlternateVisitIdentifier

@@ -504,6 +504,11 @@ Usage:       #inline
 * location[+].location.identifier.value = "OBS1"
 * location[=].location.display = "RCB OBS1 BAY2-6"
 * location[=].status = #completed
+* partOf.identifier.type = $v2-0203#AN
+* partOf.identifier.value = "5000123"
+* partOf.identifier.assigner.identifier.system = $ods-code
+* partOf.identifier.assigner.identifier.value = "RCB"
+* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * reasonCode[+].text = "ADMIT13"
@@ -577,6 +582,11 @@ Usage:       #inline
 * location[+].location.identifier.value = "OBS1"
 * location[=].location.display = "RCB OBS1 BAY2-6"
 * location[=].status = #active
+* partOf.identifier.type = $v2-0203#AN
+* partOf.identifier.value = "5000123"
+* partOf.identifier.assigner.identifier.system = $ods-code
+* partOf.identifier.assigner.identifier.value = "RCB"
+* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * extension[+].url = "https://fhir.ihe-uk.org/ITI/PAM/StructureDefinition/Extension-DecisionToAdmitDateTime"
@@ -2048,6 +2058,11 @@ Usage:       #inline
 * location[+].location.identifier.value = "RECOVERY_WARD"
 * location[=].location.display = "West Wing RECOVERY_WARD BED3"
 * location[=].status = #active
+* partOf.identifier.type = $v2-0203#AN
+* partOf.identifier.value = "5000123"
+* partOf.identifier.assigner.identifier.system = $ods-code
+* partOf.identifier.assigner.identifier.value = "RCB"
+* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * extension[+].url = "https://fhir.ihe-uk.org/ITI/PAM/StructureDefinition/Extension-PlannedEndDate"
@@ -2324,6 +2339,11 @@ Usage:       #inline
 * location[+].location.identifier.value = "RCB-ONC"
 * location[=].location.display = "West Wing RCB-ONC BED5"
 * location[=].status = #active
+* partOf.identifier.type = $v2-0203#AN
+* partOf.identifier.value = "5000123"
+* partOf.identifier.assigner.identifier.system = $ods-code
+* partOf.identifier.assigner.identifier.value = "RCB"
+* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * reasonCode[+].text = "Continuation"
@@ -2393,6 +2413,11 @@ Usage:       #inline
 * location[+].location.identifier.value = "RCB-ONC"
 * location[=].location.display = "West Wing RCB-ONC BED5"
 * location[=].status = #active
+* partOf.identifier.type = $v2-0203#AN
+* partOf.identifier.value = "5000123"
+* partOf.identifier.assigner.identifier.system = $ods-code
+* partOf.identifier.assigner.identifier.value = "RCB"
+* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * reasonCode[+].text = "Continuation"

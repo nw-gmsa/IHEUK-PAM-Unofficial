@@ -224,7 +224,7 @@ def message(o, folder, path, shared):
     ev, mtype = conv.event_of(segs)
     if not mtype.startswith("ADT"):
         return None
-    v251, _, _ = conv.convert(segs, ev)
+    v251, _, _ = conv.convert(segs, ev, conv.SCENARIO_SPELL if (folder, ev) in conv.SCENARIO_EXAMPLES else None)
     bid = conv.bundle_id(folder, ev)
     msh = conv.fields(v251[0])
     evn = (segs_of(v251, "EVN") or [None])[0]
@@ -331,6 +331,14 @@ def message(o, folder, path, shared):
                 o.r(f"location[+].location.identifier.value = {q(comp(pl, 2) or comp(pl, 1))}")
                 o.r(f"location[=].location.display = {q(' '.join(x for x in (comp(pl, 1), comp(pl, 2), comp(pl, 3)) if x))}")
                 o.r(f"location[=].status = #{status}")
+        spell = conv.get(pid, 18)
+        if comp(spell, 1):
+            # PID-18 Patient Account Number: the Hospital Provider Spell
+            o.r(f"partOf.identifier.type = $v2-0203#AN")
+            o.r(f"partOf.identifier.value = {q(comp(spell, 1))}")
+            o.r("partOf.identifier.assigner.identifier.system = $ods-code")
+            o.r(f"partOf.identifier.assigner.identifier.value = {q(fac)}")
+            o.r(f'partOf.display = "Hospital Provider Spell {comp(spell, 1)}"')
         o.r("serviceProvider.identifier.system = $ods-code")
         o.r(f"serviceProvider.identifier.value = {q(fac)}")
         if pv2:

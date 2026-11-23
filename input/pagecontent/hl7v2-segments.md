@@ -54,6 +54,7 @@ Segment definitions for HL7 v2.5.1, derived from HSCIC ITK section 5. Only field
 | 15 | Primary Language | CE | O | [0..1] | 0296 | ISO 639-1 plus 5 'q' codes for non-spoken languages | communication.language |
 | 16 | Marital Status | CE | O | [0..1] | 0002 | NHS DD Person Marital Status | maritalStatus |
 | 17 | Religion | CE | O | [0..1] | 0006 | | extension: patient-religion |
+| 18 | Patient Account Number | CX | C | [0..1] | 0203 | **Hospital Provider Spell** number (CX-5 = `AN`). HSCIC ITK 5.3.8: ties the patient to an incidence of care, such as a stay as an admitted patient; conditionally required for messages about a specific incidence of care, not for A14, A28, A31. **v2.5.1**: required for admitted patient care events in ITI-31 (HSCIC: not used in ITK) | Encounter.partOf.identifier ([Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html)) |
 | 21 | Mother's Identifier | CX | O | [0..*] | | Mother's PID-3 identifier | RelatedPerson.identifier (relationship = mother) |
 | 22 | Ethnic Group | CE | O | [0..1] | 0189 | NHS DD Ethnic Category | extension: UKCore-EthnicCategory |
 | 23 | Birth Place | ST | O | [0..1] | | 35 characters | extension: patient-birthPlace |

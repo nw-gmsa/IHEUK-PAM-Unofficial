@@ -21,16 +21,27 @@ sequenceDiagram
 
 ### Events and recipients
 
-| Step | Event | IHE option | Encounter after the event | GP Practice | Social Care | FHIR Message |
-|------|-------|------------|---------------------------|:-----------:|:-----------:|--------------|
-| 1 | ADT^A01 Admit | Basic Subset | `in-progress`, Ward OBS1 `active` | ✓ | | [hscic-a01-encounter](Bundle-hscic-a01-encounter.html) |
-| 2 | ADT^A21 Leave of absence | Advanced Encounter Management | `onleave`, bed `reserved` | ✓ | | [scenario-a21-leave](Bundle-scenario-a21-leave.html) |
-| 3 | ADT^A22 Return from leave | Advanced Encounter Management | `in-progress`, Ward OBS1 `active` | ✓ | | [scenario-a22-return](Bundle-scenario-a22-return.html) |
-| 4 | ADT^A16 Pending discharge | Pending Event Management | `in-progress`, ready for discharge (ZU1-24), expected discharge (PV2-9) | | ✓ | [scenario-a16-pending](Bundle-scenario-a16-pending.html) |
-| 5 | ADT^A03 Discharge | Basic Subset | `finished`, discharge method and destination | ✓ | ✓ | [scenario-a03-discharge](Bundle-scenario-a03-discharge.html) |
+| Step | Event | IHE option | Visit (PV1-19) | Hospital Provider Spell (PID-18) | Encounter after the event | GP Practice | Social Care | FHIR Message |
+|------|-------|------------|----------------|----------------------------------|---------------------------|:-----------:|:-----------:|--------------|
+| 1 | ADT^A01 Admit | Basic Subset | 2139 | 5000123 | `in-progress` | ✓ | | [hscic-a01-encounter](Bundle-hscic-a01-encounter.html) |
+| 2 | ADT^A21 Leave of absence | Advanced Encounter Management | 1164 | 5000123 | `onleave` | ✓ | | [hscic-a21-advanced](Bundle-hscic-a21-advanced.html) |
+| 3 | ADT^A22 Return from leave | Advanced Encounter Management | 1164 | 5000123 | `in-progress` | ✓ | | [hscic-a22-advanced](Bundle-hscic-a22-advanced.html) |
+| 4 | ADT^A16 Pending discharge | Pending Event Management | 1114 | 5000123 | `in-progress`, expected discharge (PV2-9) | | ✓ | [hscic-a16-pending](Bundle-hscic-a16-pending.html) |
+| 5 | ADT^A03 Discharge | Basic Subset | YOR123456 | 5000123 | `finished`, discharge destination | ✓ | ✓ | [hscic-a03-encounter](Bundle-hscic-a03-encounter.html) |
 {:.grid}
 
-All the messages are about the same Hospital Provider Spell (visit number 2139) and the same patient. Step 1 is the HSCIC ITK Inpatient Admission example; steps 2 to 5 continue that spell. The separate HSCIC ITK leave, pending discharge and discharge examples are about other visits, so they are not used here. See [HSCIC ITK Example Messages](hscic-examples.html).
+### Hospital Provider Spell
+
+The steps use the HSCIC ITK example messages, which record each event against a different **visit** (`PV1-19`). A Consumer ties them together into one stay as an admitted patient with the **Hospital Provider Spell** number:
+
+- in HL7 v2.5.1, `PID-18` Patient Account Number with CX-5 = `AN` (e.g. `5000123^^^SPELLID^AN`);
+- in FHIR, `Encounter.partOf` as a logical reference by [Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html).
+
+HL7 v2 Table 0203 has no Hospital Provider Spell type, so `AN` (Account number) is used as an interim workaround. The HSCIC originals do not carry PID-18: it is added to these five examples for this scenario (see [HSCIC ITK Example Messages](hscic-examples.html), where it is listed as a change).
+
+<div class="alert alert-info">
+The message dates come from the separate HSCIC ITK examples (February to October 2010), so they are not in the order of the scenario steps. Read the scenario for the sequence of events and the spell identifier, not for the dates.
+</div>
 
 ### Routing
 
