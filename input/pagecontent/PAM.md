@@ -109,3 +109,7 @@ sequenceDiagram
 ```
 
 The worked example, with HL7 v2.5.1 and FHIR versions of the messages, is on [Testing and Example Messages](testing.html).
+
+#### Example Scenario: notifying the GP and social care
+
+[Inpatient admission, leave and discharge](ExampleScenario-InpatientLeaveAndDischarge.html) follows one Hospital Provider Spell (admission, leave of absence, return, pending discharge and discharge). The integration engine routes the events to the patient's GP practice and, for discharge planning, to social care.

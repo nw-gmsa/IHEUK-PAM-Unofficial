@@ -105,6 +105,7 @@ menu:
     Patient Demographics Query for Mobile (PDQm): PDQm.html
     Patient Identifier Cross-reference for Mobile (PIXm): PIXm.html
     Patient Master Identity Registry (PMIR): PMIR.html
+    "Example Scenario: Inpatient admission, leave and discharge": ExampleScenario-InpatientLeaveAndDischarge.html
   Volume 2 (Transactions):
     Patient Identity Management [ITI-30]: ITI-30.html
     Patient Encounter Management [ITI-31]: ITI-31.html
