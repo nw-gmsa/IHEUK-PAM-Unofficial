@@ -1,0 +1,7 @@
+/input-cache/
+/output/
+/temp/
+/template/
+/fsh-generated/
+/.idea/
+.DS_Store

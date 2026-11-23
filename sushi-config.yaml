@@ -1,0 +1,103 @@
+# sushi-config.yaml is documented https://fshschool.org/docs/sushi/configuration/
+# ───────────────────────────────────────────────────
+# Unofficial IHE UK national extension of IHE ITI Patient Administration Management (PAM)
+# and Patient Identifier Cross-referencing (PIX), using HL7 v2.5.1 and HL7 Europe Base.
+id: ihe.uk.iti.pam
+canonical: https://fhir.ihe-uk.org/ITI/PAM
+version: 0.1.0
+name: IHEUKPAM
+title: IHE UK Patient Administration Management (Unofficial)
+description: Unofficial IHE UK national extension of IHE ITI Patient Administration Management (PAM) and Patient Identifier Cross-referencing (PIX), derived from the HSCIC ITK HL7 v2 ADT Message Specifications, updated to HL7 v2.5.1 and mapped to HL7 FHIR R4 profiles based on HL7 Europe Base.
+releaseLabel: ci-build
+
+status: draft
+publisher:
+  - name: NHS North West Genomics
+  - url: https://www.nwgenomics.nhs.uk/contact-us
+
+license: CC-BY-4.0
+fhirVersion: 4.0.1
+jurisdiction: urn:iso:std:iso:3166#GB "United Kingdom of Great Britain and Northern Ireland"
+copyrightYear: 2026+
+
+dependencies:
+  hl7.fhir.eu.base: 2.0.1
+  fhir.r4.ukcore.stu3.currentbuild:
+    version: 0.29.0-pre-release
+  hl7.fhir.extensions.r5: 4.0.1
+
+FSHOnly: false
+parameters:
+  path-resource:
+    - input/resources
+    - fsh-generated/resources
+  show-inherited-invariants: 'false'
+  usage-stats-opt-out: 'false'
+  logging: progress
+  shownav: true
+  active-tables: 'false'
+  apply-contact: 'true'
+  apply-jurisdiction: 'true'
+  apply-publisher: 'true'
+  apply-version: 'true'
+  excludettl: 'true'
+  excludemap: 'true'
+  generate:
+    - xml
+    - json
+  pin-canonicals: pin-multiples
+
+instanceOptions:
+  setMetaProfile: standalone-only
+
+pages:
+  index.md:
+    title: Home
+  overview.md:
+    title: Overview
+  PAM.md:
+    title: Patient Administration Management (PAM)
+  PIX.md:
+    title: Patient Identifier Cross-referencing (PIX)
+  ITI-30.md:
+    title: Patient Identity Management [ITI-30]
+  ITI-31.md:
+    title: Patient Encounter Management [ITI-31]
+  hl7v2.md:
+    title: HL7 v2.5.1 Conventions
+  hl7v2-segments.md:
+    title: HL7 v2.5.1 Segment Definitions
+  hl7v2-zsegments.md:
+    title: UK Z Segments (ZU1-ZU8)
+  v2-fhir-mapping.md:
+    title: HL7 v2 to FHIR Mapping
+  terminology.md:
+    title: Terminology and Reference Tables
+  hscic-changes.md:
+    title: Changes from HSCIC ITK v2.4
+  testing.md:
+    title: Testing and Example Messages
+
+menu:
+  Home: index.html
+  Volume 1 (Profiles):
+    Overview: overview.html
+    Patient Administration Management (PAM): PAM.html
+    Patient Identifier Cross-referencing (PIX): PIX.html
+  Volume 2 (Transactions):
+    Patient Identity Management [ITI-30]: ITI-30.html
+    Patient Encounter Management [ITI-31]: ITI-31.html
+    HL7 v2.5.1 Conventions: hl7v2.html
+    HL7 v2.5.1 Segment Definitions: hl7v2-segments.html
+    UK Z Segments (ZU1-ZU8): hl7v2-zsegments.html
+  Volume 3 (Content):
+    HL7 v2 to FHIR Mapping: v2-fhir-mapping.html
+    Terminology and Reference Tables: terminology.html
+    Patient: StructureDefinition-PAMPatient.html
+    Encounter: StructureDefinition-PAMEncounter.html
+    Related Person (NK1): StructureDefinition-PAMRelatedPerson.html
+    Message Header (MSH/EVN): StructureDefinition-PAMMessageHeader.html
+  Supporting:
+    Changes from HSCIC ITK v2.4: hscic-changes.html
+    Testing and Example Messages: testing.html
+    Artifacts: artifacts.html
