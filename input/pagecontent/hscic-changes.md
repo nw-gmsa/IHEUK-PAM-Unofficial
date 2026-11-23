@@ -16,8 +16,8 @@ This page lists the changes made to the HSCIC ITK HL7 v2 Message Specification (
 | 8 | XPN-7 Name Type | PDS values up to 17 characters (`PREFERRED`, `PREVIOUS-BIRTH`...) | HL7 Table 0200 single character | Senders. Receivers accept both ([mapping](hl7v2.html#name-type-xpn-7)) |
 | 9 | PV1-10 Hospital Service, PV1-14 Admit Source | CE | IS (HL7 v2.5.1 data type) | Send the code only, without `^text^system` |
 | 10 | PV1-37 Discharged to Location | CM | DLD | Format unchanged (`code^date`) |
-| 11 | PV1-19 CX-5 | - | `VN` | Senders |
-| 11a | PID-18 Patient Account Number | Not used in ITK (defined in 5.3.8) | Conditional: Hospital Provider Spell number, CX-5 `AN`, for admitted patient care events | Senders of admitted patient care events |
+| 11 | PV1-19 Visit Number | Visit: admission, A&E attendance, community contact or outpatient attendance | **Hospital Provider Spell** (inpatient stay or outpatient spell), CX-5 `AN`. The same value in every event about the stay or spell | Senders |
+| 11a | PV1-50 Alternate Visit ID | e.g. consultant episode | Visit within the spell: outpatient attendance (visit number) or consultant episode, CX-5 `VN` | Senders that send attendances or consultant episodes |
 | 12 | XON (PD1-3) | XON-3 ID Number | XON-10 Organization Identifier preferred; XON-3 still accepted | Senders |
 | 13 | EVN-4, EVN-7 | Not used | Permitted | None |
 | 14 | ERR | ERR-1 ELD | ERR-2, ERR-3, ERR-4 (v2.5) | Receivers that return errors |

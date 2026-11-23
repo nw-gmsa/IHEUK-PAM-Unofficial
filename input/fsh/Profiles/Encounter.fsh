@@ -5,9 +5,7 @@ Title:       "PAM Encounter"
 Description: """
 Patient visit / encounter conveyed by IHE PAM [ITI-31](ITI-31.html): HL7 v2.5.1 `PV1`, `PV2` and the UK `ZU1` segment.
 
-A visit (`PV1-19`) may be an admission, an A&E attendance, a community contact or an outpatient attendance (appointment). A consultant episode within an inpatient stay is identified by `PV1-50` Alternate Visit ID.
-
-The visits and events of one stay as an admitted patient are tied together by the **Hospital Provider Spell** identifier (`PID-18`), carried as `partOf` (a logical reference by [Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html)).
+`PV1-19` identifies the **Hospital Provider Spell**: an inpatient stay (admission to discharge) or an outpatient spell, with identifier type `AN` ([Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html)). Every event about the same stay or spell carries the same `PV1-19`, which ties them together. A visit within the spell, an outpatient attendance or a consultant episode within an inpatient stay, is identified by `PV1-50` Alternate Visit ID (type `VN`).
 
 HL7 Europe Base does not define an Encounter profile, so this profile is based on the FHIR R4 Encounter with UK Core extensions and terminology. `Encounter.status` is derived from the trigger event, see [ITI-31](ITI-31.html#trigger-events-and-encounter-status).
 """
@@ -35,13 +33,13 @@ HL7 Europe Base does not define an Encounter profile, so this profile is based o
 * identifier ^slicing.rules = #open
 * identifier ^slicing.ordered = false
 * identifier contains
-    visitNumber 0..1 MS and
+    hospitalProviderSpell 0..1 MS and
     alternateVisitId 0..1
-* identifier[visitNumber] only VisitNumber
-* identifier[visitNumber] ^short = "PV1-19 Visit Number"
-* identifier[visitNumber] insert SupplierPopulateIfKnown
+* identifier[hospitalProviderSpell] only HospitalProviderSpellIdentifier
+* identifier[hospitalProviderSpell] ^short = "PV1-19 Visit Number: Hospital Provider Spell (type AN)"
+* identifier[hospitalProviderSpell] insert SupplierPopulateIfKnown
 * identifier[alternateVisitId] only AlternateVisitIdentifier
-* identifier[alternateVisitId] ^short = "PV1-50 Alternate Visit ID (e.g. consultant episode)"
+* identifier[alternateVisitId] ^short = "PV1-50 Alternate Visit ID: outpatient attendance or consultant episode (type VN)"
 
 * status MS
 * status ^short = "Derived from the trigger event (EVN/MSH-9) - see ITI-31"
@@ -113,10 +111,7 @@ HL7 Europe Base does not define an Encounter profile, so this profile is based o
 * serviceProvider ^short = "MSH-4 Sending Facility / PL-4 Facility organisation (ODS code)"
 
 * partOf only Reference(PAMEncounter)
-* partOf MS
-* partOf ^short = "PID-18 Patient Account Number: the Hospital Provider Spell this visit is part of"
-* partOf.identifier only HospitalProviderSpellIdentifier
-* partOf ^comment = "Normally a logical reference by identifier: the Hospital Provider Spell identifier (PID-18, type AN) ties together the visits and events of one stay as an admitted patient, from admission to discharge."
+* partOf ^short = "For a consultant episode (PV1-50), the Hospital Provider Spell (PV1-19)"
 
 Mapping:  PAMEncounterToV2
 Source:   PAMEncounter
@@ -137,14 +132,13 @@ Title:    "HL7 v2.5.1 (HSCIC ITK)"
 * hospitalization.specialCourtesy -> "PV1-16"
 * participant[admittingDoctor] -> "PV1-17"
 * type -> "PV1-18"
-* identifier[visitNumber] -> "PV1-19"
+* identifier[hospitalProviderSpell] -> "PV1-19"
 * extension[dischargeMethod] -> "PV1-36"
 * hospitalization.dischargeDisposition -> "PV1-37"
 * hospitalization.dietPreference -> "PV1-38"
 * period.start -> "PV1-44"
 * period.end -> "PV1-45"
 * identifier[alternateVisitId] -> "PV1-50"
-* partOf -> "PID-18"
 * reasonCode -> "PV2-3"
 * extension[plannedStartDate] -> "PV2-8"
 * extension[plannedEndDate] -> "PV2-9"

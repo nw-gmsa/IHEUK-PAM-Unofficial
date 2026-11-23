@@ -63,13 +63,26 @@ RETIRED_ICD10 = {"K35.0"}
 # (https://fhir.nhs.uk/CodeSystem/NHSDataModelAndDictionary-treatment-function, uk.nhsdigital.r4 2.11.0)
 NOT_TREATMENT_FUNCTION = {"312", "500", "600", "810", "820", "821", "823", "824", "830", "831", "900", "901", "950", "960"}
 
-# Hospital Provider Spell number (PID-18, CX-5 AN) added to the examples used by the Example Scenario
-# "Inpatient admission, leave and discharge", to tie their visits together. Not in the HSCIC originals.
-SCENARIO_SPELL = "5000123^^^SPELLID^AN"
-SCENARIO_EXAMPLES = {
-    ("PatientEncounterManagement", "A01"), ("AdvancedEncounterManagement", "A21"), ("AdvancedEncounterManagement", "A22"),
-    ("PendingEncounterManagement", "A16"), ("PatientEncounterManagement", "A03"),
+# The HSCIC examples use a different PV1-19 visit number for most events. The ADT examples are amended so that PV1-19
+# is the Hospital Provider Spell (inpatient stay or outpatient spell, CX-5 AN), one per original PV1-19 value (the
+# examples that share a visit number are about the same stay), and the original visit number moves to PV1-50
+# Alternate Visit ID (CX-5 VN).
+SPELL_AA = "RCB"
+SPELLS = {
+    "2139": "5000101",       # admission, cancel admission (A01, A11)
+    "YOR123456": "5000102",  # discharge, cancel discharge (A03, A13)
+    "2140": "5000103",       # update encounter (A08)
+    "2141": "5000104",       # outpatient spell (A04, both folders)
+    "4532": "5000105",       # maternity pre-admit (A05)
+    "2131": "5000106",       # pre-admit, cancel pre-admit (A05, A38)
+    "1223": "5000107",       # transfer, cancel transfer (A02, A12)
+    "1115": "5000108",       # pending admit, cancel pending admit (A14, A27)
+    "1114": "5000109",       # pending transfer / discharge and cancels (A15, A16, A25, A26)
+    "1164": "5000110",       # leave of absence, return and cancels (A21, A22, A52, A53)
+    "11554": "5000111",      # discharge, cancel discharge, update master (A03, A13)
+    "2347": "5000112",       # transfer, cancel transfer, update master (A02, A12)
 }
+
 
 # folder -> short name used in the ids of the generated FHIR Message examples (scripts/hscic_v2_to_fhir.py)
 ABBR = {
@@ -221,7 +234,7 @@ def bad_dates(f):
                 yield n, part
 
 
-def convert(segs, event, spell=None):
+def convert(segs, event, amend=False):
     changes, issues = set(), []
     out = []
     for seg in segs:
@@ -259,9 +272,6 @@ def convert(segs, event, spell=None):
                 put(f, 15, lang_fix(get(f, 15), "PID-15", changes))
             if get(f, 21):
                 put(f, 21, cx_fix(get(f, 21), "MR", "PID-21", changes))
-            if spell and not get(f, 18):
-                put(f, 18, spell)
-                changes.add(f"PID-18: Hospital Provider Spell number `{spell}` added for the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html) (not in the HSCIC original)")
             for rep in get(f, 3).split("~"):
                 c = comps(rep)
                 if len(c) >= 5 and c[4] not in ("", "NH", "MR", "PI", "VN", "AN"):
@@ -288,6 +298,13 @@ def convert(segs, event, spell=None):
             if get(f, 10) in NOT_TREATMENT_FUNCTION:
                 issues.append(f"PV1-10 Hospital Service `{get(f, 10)}` is a Main Specialty Code, not a Treatment Function Code")
             put(f, 14, is_fix(get(f, 14), "PV1-14", changes))
+            visit = comps(get(f, 19))
+            if amend and visit[0] in SPELLS and not get(f, 50):
+                spell = f"{SPELLS[visit[0]]}^^^{SPELL_AA}^AN"
+                put(f, 50, get(f, 19))
+                put(f, 19, spell)
+                changes.add(f"PV1-19: example amended - Hospital Provider Spell `{spell}` (CX-5 `AN`), the same in every example about this stay or spell")
+                changes.add(f"PV1-50: example amended - the HSCIC visit number `{visit[0]}` moved from PV1-19 to Alternate Visit ID (outpatient attendance or consultant episode)")
             if get(f, 19):
                 put(f, 19, cx_fix(get(f, 19), "VN", "PV1-19", changes))
             if get(f, 50):
@@ -371,10 +388,12 @@ The examples are about one patient at York Hospital (`RCB`). Segments are shown 
 | Operator ID `111111111` (receptionist Cortana^Emily) | `OP000123` (name Cortana^Emily kept) |
 {:.grid}
 
+**Hospital Provider Spells.** In the HSCIC examples `PV1-19` is a visit number. The ADT examples are amended so that `PV1-19` is the [Hospital Provider Spell](StructureDefinition-HospitalProviderSpellIdentifier.html) (inpatient stay or outpatient spell, CX-5 `AN`, assigning authority `RCB`) and the HSCIC visit number moves to `PV1-50` Alternate Visit ID (CX-5 `VN`): the outpatient attendance or the consultant episode. Examples that had the same visit number are about the same stay, so they share a spell number. The query examples are not amended. For one stay followed from admission to discharge, see the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html).
+
 FHIR Messages (generated by `scripts/hscic_v2_to_fhir.py`):
 
 - Times get the Europe/London offset (GMT or BST) that applied on the date, because FHIR dateTimes need a time zone.
-- Local identifiers (MRN, visit number, ward, staff ID, message control ID) have only a local namespace in the HSCIC examples and no known OID, so `Identifier.system` is omitted. They are qualified by type and assigner (ODS code) instead.
+- Local identifiers (MRN, spell and visit numbers, ward, staff ID, message control ID) have only a local namespace in the HSCIC examples and no known OID, so `Identifier.system` is omitted. They are qualified by type and assigner (ODS code) instead.
 - PV1-10 is coded with NHS England's Treatment Function Code system; a code that is not a Treatment Function (e.g. `500`) is carried as text.
 - OPCS-4 procedure codes are carried as `code.text`, because OPCS-4 has no agreed FHIR code system URI in HL7 Terminology.
 - Not mapped: OBX, ZU3, ZU4, ZU6, ZU7, ZU8, PV1-36 (Discharge Disposition) and PID-17 (Religion), and invalid dates in the originals.
@@ -401,8 +420,7 @@ Not converted in v2.5.1:
             if not segs or not segs[0].startswith("MSH"):
                 continue
             ev, mtype = event_of(segs)
-            spell = SCENARIO_SPELL if (folder, ev) in SCENARIO_EXAMPLES else None
-            v251, changes, _ = convert(segs, ev, spell)
+            v251, changes, _ = convert(segs, ev, amend=folder != "QueryPatient")
             # issues describe the linked original, so they are taken from the unmodified file
             _, _, issues = convert(original, ev)
             name = p.parent.name if folder != "QueryPatient" else f"{p.parent.name} {p.stem}"

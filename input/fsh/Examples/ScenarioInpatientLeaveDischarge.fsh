@@ -1,8 +1,9 @@
 // Example Scenario: inpatient admission, leave of absence, pending discharge and discharge, with event
 // notifications to the GP practice and to social care.
-// The steps reuse the HSCIC ITK example FHIR Messages (A01, A21, A22, A16, A03). They are different visits (PV1-19);
-// the Hospital Provider Spell number 5000123 (PID-18 / Encounter.partOf), added to these examples by
-// scripts/convert_hscic_examples.py (SCENARIO_EXAMPLES), ties them together.
+// The steps are the purpose-built HL7 v2.5.1 messages in examples-v2/InpatientLeaveAndDischarge and their FHIR Messages
+// (generated into ScenarioMessages.fsh by scripts/hscic_v2_to_fhir.py --scenario). Every message carries the same
+// Hospital Provider Spell 5000123 (PV1-19, type AN) and, in FHIR, the same Encounter resource
+// (Encounter/inpatient-spell-5000123), shown here as one instance with a version per event.
 
 Alias: $instanceContent = http://hl7.org/fhir/5.0/StructureDefinition/extension-ExampleScenario.instance.content
 Alias: $verContent = http://hl7.org/fhir/5.0/StructureDefinition/extension-ExampleScenario.instance.version.content
@@ -38,6 +39,11 @@ RuleSet: InstanceVersion(id, name, content, description)
   * versionId = "{id}"
   * description = "{description}"
 
+RuleSet: InstanceEncounterVersion(id, description)
+* instance[=].version[+]
+  * versionId = "{id}"
+  * description = "{description}"
+
 RuleSet: ProcessCreateEvent(num, name, sender, receiver, request, version, description)
 * step[+].operation
   * number = "{num}"
@@ -55,7 +61,7 @@ Title:       "Inpatient admission, leave and discharge"
 Description: """
 Mrs Editestpatient (the HSCIC ITK example patient, EDITESTPATIENT TEN) is referred by her GP, Dr Townley of the Malton GP Practice, and admitted to York Hospital under Dr Darwin (General Medicine). During her stay she goes home on leave and returns. When she is medically fit, a pending discharge is recorded, and she is then discharged home.
 
-The events are recorded against different visits (`PV1-19`). The **Hospital Provider Spell** number (`PID-18` Patient Account Number, `5000123`; `Encounter.partOf` in FHIR) ties them together into one stay as an admitted patient.
+Every message carries the same **Hospital Provider Spell** number (`PV1-19`, type `AN`, `5000123`). In FHIR every message carries the same Encounter, updated by each event: admitted (`in-progress`), on leave (`onleave`), back on the ward (`in-progress`), expected discharge date, and discharged (`finished`).
 
 The hospital PAS (Patient Encounter Supplier) sends each event once to the integration engine (`MSH-5`/`MSH-6` = `ROUTE`), which forwards it to the systems that need it (Patient Encounter Consumers):
 
@@ -72,16 +78,23 @@ Usage:       #example
 * insert ActorEntity(gp, "GP Practice - Malton GP Practice", [[ [Patient Encounter Consumer](ActorDefinition-PatientEncounterConsumer.html). The GP clinical system of the Malton GP Practice (Y06601), where the patient is registered (PD1-3) ]])
 * insert ActorEntity(socialcare, "Social Care - Local Authority", [[ [Patient Encounter Consumer](ActorDefinition-PatientEncounterConsumer.html). The adult social care system of the patient's local authority, which plans any care and support needed after discharge ]])
 
-* insert Instance_Empty(Admission, Bundle, [["Admission (ADT^A01)"]], [[ Inpatient admission, visit 2139, Ward OBS1, General Medicine. Hospital Provider Spell 5000123 ]])
-* insert InstanceVersion(1, "PAM FHIR Message A01", hscic-a01-encounter, [[ The HSCIC ITK Inpatient Admission example (visit 2139) ]])
-* insert Instance_Empty(Leave, Bundle, [["Leave of absence (ADT^A21)"]], [[ Encounter status onleave. Hospital Provider Spell 5000123 ]])
-* insert InstanceVersion(1, "PAM FHIR Message A21", hscic-a21-advanced, [[ The HSCIC ITK Leave of Absence example (visit 1164) ]])
-* insert Instance_Empty(Return, Bundle, [["Return from leave of absence (ADT^A22)"]], [[ Encounter status in-progress. Hospital Provider Spell 5000123 ]])
-* insert InstanceVersion(1, "PAM FHIR Message A22", hscic-a22-advanced, [[ The HSCIC ITK Return from Leave of Absence example (visit 1164) ]])
-* insert Instance_Empty(PendingDischarge, Bundle, [["Pending discharge (ADT^A16)"]], [[ Expected discharge date/time (PV2-9). Hospital Provider Spell 5000123 ]])
-* insert InstanceVersion(1, "PAM FHIR Message A16", hscic-a16-pending, [[ The HSCIC ITK Pending Discharge example (visit 1114) ]])
-* insert Instance_Empty(Discharge, Bundle, [["Discharge (ADT^A03)"]], [[ Encounter status finished; discharge destination. Hospital Provider Spell 5000123 ]])
-* insert InstanceVersion(1, "PAM FHIR Message A03", hscic-a03-encounter, [[ The HSCIC ITK Discharge Patient example (visit YOR123456) ]])
+* insert Instance_Empty(SpellEncounter, Encounter, [["Hospital Provider Spell 5000123"]], [[ The inpatient stay. PV1-19 5000123^^^RCB^AN. Encounter/inpatient-spell-5000123 in every FHIR Message ]])
+* insert InstanceEncounterVersion(1, [[ Admitted to Ward OBS1 under Dr Darwin, General Medicine. status in-progress ]])
+* insert InstanceEncounterVersion(2, [[ On leave of absence. status onleave ]])
+* insert InstanceEncounterVersion(3, [[ Back on the ward. status in-progress ]])
+* insert InstanceEncounterVersion(4, [[ Pending discharge. status in-progress with expected discharge date/time 12 November 2026 11:00 ]])
+* insert InstanceEncounterVersion(5, [[ Discharged to usual place of residence. status finished with period.end ]])
+
+* insert Instance_Empty(Admission, Bundle, [["Admission (ADT^A01)"]], [[ Emergency admission on referral from the GP ]])
+* insert InstanceVersion(1, "PAM FHIR Message A01", scenario-a01, [[ Carries version 1 of the Hospital Provider Spell Encounter. ADT^A01 2 November 2026 14:30 ]])
+* insert Instance_Empty(Leave, Bundle, [["Leave of absence (ADT^A21)"]], [[ The patient goes home on leave ]])
+* insert InstanceVersion(1, "PAM FHIR Message A21", scenario-a21, [[ Carries version 2 of the Hospital Provider Spell Encounter. ADT^A21 6 November 2026 10:00 ]])
+* insert Instance_Empty(Return, Bundle, [["Return from leave of absence (ADT^A22)"]], [[ The patient returns from leave ]])
+* insert InstanceVersion(1, "PAM FHIR Message A22", scenario-a22, [[ Carries version 3 of the Hospital Provider Spell Encounter. ADT^A22 8 November 2026 18:00 ]])
+* insert Instance_Empty(PendingDischarge, Bundle, [["Pending discharge (ADT^A16)"]], [[ Expected discharge date/time in PV2-9 ]])
+* insert InstanceVersion(1, "PAM FHIR Message A16", scenario-a16, [[ Carries version 4 of the Hospital Provider Spell Encounter. ADT^A16 10 November 2026 09:00 ]])
+* insert Instance_Empty(Discharge, Bundle, [["Discharge (ADT^A03)"]], [[ Discharge date/time and discharge destination ]])
+* insert InstanceVersion(1, "PAM FHIR Message A03", scenario-a03, [[ Carries version 5 of the Hospital Provider Spell Encounter. ADT^A03 12 November 2026 11:30 ]])
 
 * process[+]
   * title = "Inpatient admission, leave and discharge"

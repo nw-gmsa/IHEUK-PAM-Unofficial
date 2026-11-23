@@ -16,7 +16,7 @@ This page summarises how the HL7 v2.5.1 ADT model maps to HL7 FHIR R4. The appro
 | MSH | [PAM Message Header](StructureDefinition-PAMMessageHeader.html) | FHIR R4 MessageHeader | |
 | EVN | [PAM Event](StructureDefinition-PAMProvenance.html) | FHIR R4 Provenance | As in HL7 v2-to-FHIR |
 | message | [PAM Message Bundle](StructureDefinition-PAMBundleMessage.html) | FHIR R4 Bundle | |
-| CX | [PAM Identifier](StructureDefinition-PAMIdentifier.html), [NHS Number](StructureDefinition-NHSNumber.html), [Local Patient Identifier](StructureDefinition-LocalPatientIdentifier.html), [Visit Number](StructureDefinition-VisitNumber.html) | Identifier | |
+| CX | [PAM Identifier](StructureDefinition-PAMIdentifier.html), [NHS Number](StructureDefinition-NHSNumber.html), [Local Patient Identifier](StructureDefinition-LocalPatientIdentifier.html), [Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html), [Alternate Visit Identifier](StructureDefinition-AlternateVisitIdentifier.html) | Identifier | |
 {:.grid}
 
 <div class="alert alert-info">

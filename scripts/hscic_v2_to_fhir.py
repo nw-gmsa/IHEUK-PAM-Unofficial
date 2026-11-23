@@ -5,7 +5,12 @@ Each ADT example is first converted to HL7 v2.5.1 (with the test identifier subs
 convert_hscic_examples.py, then mapped to the PAM FHIR profiles following v2-fhir-mapping.md.
 Queries (QBP/RSP/QCN) are PDQ and are not converted.
 
+With --scenario, the same mapping is applied to the purpose-built HL7 v2.5.1 messages of an Example Scenario (one
+message per .hl7 file, in file name order). All the messages carry the same Encounter (one resource id), so that the
+FHIR Messages show one Encounter being updated. The v2.5.1 messages are also written as a page include.
+
 Usage: python3 -I scripts/hscic_v2_to_fhir.py "Specifications/HSCIC/HL7 v2 ADT Examples" input/fsh/Examples/HSCIC/HSCICMessages.fsh
+       python3 -I scripts/hscic_v2_to_fhir.py --scenario examples-v2/InpatientLeaveAndDischarge input/fsh/Examples/ScenarioMessages.fsh input/includes/scenario-inpatient-leave-discharge-v2.md
 """
 import datetime
 import importlib.util
@@ -118,10 +123,12 @@ def patient(o, name, f, pd1, title, usage="#inline", description=None):
             continue
         idn, aa, typ = comp(rep, 1), comp(rep, 4), comp(rep, 5)
         if typ == "NH":
+            o.r("identifier[nhsNumber].type = $v2-0203#NH")
             o.r(f"identifier[nhsNumber].system = $nhs-number")
             o.r(f"identifier[nhsNumber].value = {q(idn)}")
         else:
-            o.r(f"identifier[localPatientIdentifier][+].value = {q(idn)}")
+            o.r("identifier[localPatientIdentifier][+].type = $v2-0203#MR")
+            o.r(f"identifier[localPatientIdentifier][=].value = {q(idn)}")
             o.r("identifier[localPatientIdentifier][=].assigner.identifier.system = $ods-code")
             o.r("identifier[localPatientIdentifier][=].assigner.identifier.value = \"RCB\"")
     for rep in conv.get(f, 5).split("~"):
@@ -224,8 +231,16 @@ def message(o, folder, path, shared):
     ev, mtype = conv.event_of(segs)
     if not mtype.startswith("ADT"):
         return None
-    v251, _, _ = conv.convert(segs, ev, conv.SCENARIO_SPELL if (folder, ev) in conv.SCENARIO_EXAMPLES else None)
+    v251, _, _ = conv.convert(segs, ev, amend=True)
     bid = conv.bundle_id(folder, ev)
+    scenario = conv.scenario_for(path)
+    build(o, bid, ev, mtype, v251, shared, f"HSCIC {mtype} - {path.parent.name}",
+          f"FHIR Message equivalent of the HSCIC ITK example {mtype} (converted to HL7 v2.5.1). {scenario}"[:900])
+    return bid
+
+
+def build(o, bid, ev, mtype, v251, shared, title, description, enc_id=None):
+    """Map one HL7 v2.5.1 ADT message to a FHIR Message Bundle. enc_id gives the Encounter a fixed resource id."""
     msh = conv.fields(v251[0])
     evn = (segs_of(v251, "EVN") or [None])[0]
     pid = segs_of(v251, "PID")[0]
@@ -278,7 +293,8 @@ def message(o, folder, path, shared):
         o.instance(f"{bid}-prior-patient", "PAMPatient", f"Patient - non-surviving record (MRG) - {ev}")
         o.r("active = false")
         for rep in conv.get(mrg, 1).split("~"):
-            o.r(f"identifier[localPatientIdentifier][+].value = {q(comp(rep, 1))}")
+            o.r("identifier[localPatientIdentifier][+].type = $v2-0203#MR")
+            o.r(f"identifier[localPatientIdentifier][=].value = {q(comp(rep, 1))}")
             o.r("identifier[localPatientIdentifier][=].assigner.identifier.system = $ods-code")
             o.r('identifier[localPatientIdentifier][=].assigner.identifier.value = "RCB"')
         o.r('name[+].use = #official')
@@ -290,11 +306,17 @@ def message(o, folder, path, shared):
     # PV1, PV2, ZU1
     if has_encounter:
         o.instance(enc, "PAMEncounter", f"Encounter - {ev}")
-        visit = conv.get(pv1, 19)
-        if comp(visit, 1):
-            o.r(f"identifier[visitNumber].value = {q(comp(visit, 1))}")
-            o.r("identifier[visitNumber].assigner.identifier.system = $ods-code")
-            o.r(f"identifier[visitNumber].assigner.identifier.value = {q(fac)}")
+        if enc_id:
+            o.r(f'id = "{enc_id}"')
+        # PV1-19 Hospital Provider Spell (AN), PV1-50 Alternate Visit ID (VN). SUSHI does not fill in the slice
+        # pattern values (use, type), so they are set explicitly.
+        for n, slice_name, use, typ in ((19, "hospitalProviderSpell", "official", "AN"), (50, "alternateVisitId", "secondary", "VN")):
+            if comp(conv.get(pv1, n), 1):
+                o.r(f"identifier[{slice_name}].use = #{use}")
+                o.r(f"identifier[{slice_name}].type = $v2-0203#{typ}")
+                o.r(f"identifier[{slice_name}].value = {q(comp(conv.get(pv1, n), 1))}")
+                o.r(f"identifier[{slice_name}].assigner.identifier.system = $ods-code")
+                o.r(f"identifier[{slice_name}].assigner.identifier.value = {q(fac)}")
         o.r(f"status = #{STATUS.get(ev, 'in-progress')}")
         o.r(f"class = $v3-ActCode#{CLASS.get(conv.get(pv1, 2), 'AMB')}")
         o.r(f"subject = Reference({pat})")
@@ -331,14 +353,6 @@ def message(o, folder, path, shared):
                 o.r(f"location[+].location.identifier.value = {q(comp(pl, 2) or comp(pl, 1))}")
                 o.r(f"location[=].location.display = {q(' '.join(x for x in (comp(pl, 1), comp(pl, 2), comp(pl, 3)) if x))}")
                 o.r(f"location[=].status = #{status}")
-        spell = conv.get(pid, 18)
-        if comp(spell, 1):
-            # PID-18 Patient Account Number: the Hospital Provider Spell
-            o.r(f"partOf.identifier.type = $v2-0203#AN")
-            o.r(f"partOf.identifier.value = {q(comp(spell, 1))}")
-            o.r("partOf.identifier.assigner.identifier.system = $ods-code")
-            o.r(f"partOf.identifier.assigner.identifier.value = {q(fac)}")
-            o.r(f'partOf.display = "Hospital Provider Spell {comp(spell, 1)}"')
         o.r("serviceProvider.identifier.system = $ods-code")
         o.r(f"serviceProvider.identifier.value = {q(fac)}")
         if pv2:
@@ -355,7 +369,7 @@ def message(o, folder, path, shared):
             if conv.get(zu1, 2) in ("1", "2", "3", "4", "5", "8", "9"):
                 o.r(f'extension[+].url = "{BASE}StructureDefinition/Extension-IntendedManagement"')
                 o.r(f"extension[=].valueCodeableConcept = IntendedManagementCS#{conv.get(zu1, 2)}")
-        entries.append(("Encounter", enc))
+        entries.append(("Encounter", enc, enc_id or enc))
 
     # NK1
     for nk1 in segs_of(v251, "NK1"):
@@ -417,16 +431,13 @@ def message(o, folder, path, shared):
         entries.append(("Procedure", name))
 
     # Bundle
-    scenario = conv.scenario_for(path)
-    o.instance(bid, "PAMBundleMessage", f"HSCIC {mtype} - {path.parent.name}", usage="#example",
-               description=f"FHIR Message equivalent of the HSCIC ITK example {mtype} (converted to HL7 v2.5.1). {scenario}"[:900])
+    o.instance(bid, "PAMBundleMessage", title, usage="#example", description=description)
     # MSH-10 Message Control ID has no identifier system
     o.r(f'identifier.value = "{comp(conv.get(msh, 10), 1)}"')
     o.r("type = #message")
     o.r(f'timestamp = "{ts(conv.get(msh, 7), instant=True)}"')
-    for rtype, name in entries:
-        o.r(f'insert Entry("{BASE}{rtype}/{name}", {name})')
-    return bid
+    for rtype, name, *rid in entries:
+        o.r(f'insert Entry("{BASE}{rtype}/{rid[0] if rid else name}", {name})')
 
 
 def main(src, dest):
@@ -457,5 +468,38 @@ def main(src, dest):
     pathlib.Path(dest).write_text("\n".join(head.lines + o.lines) + "\n")
     print(f"wrote {count} FHIR Messages, 1 shared Patient and {len(shared['nk1'])} shared RelatedPersons to {dest}")
 
+# Example Scenario "Inpatient admission, leave and discharge": the spell Encounter shared by its messages
+SCENARIO_ENCOUNTER = "inpatient-spell-5000123"
+SCENARIO_STEPS = {
+    "A01": "Admit", "A21": "Leave of absence", "A22": "Return from leave of absence",
+    "A16": "Pending discharge", "A03": "Discharge",
+}
+
+
+def scenario(src, dest, include):
+    o = Out()
+    o.lines.append("// GENERATED by scripts/hscic_v2_to_fhir.py --scenario from " + src + " - do not edit")
+    md = ["<!-- GENERATED by scripts/hscic_v2_to_fhir.py --scenario from " + src + " - do not edit -->", ""]
+    files = sorted(pathlib.Path(src).glob("*.hl7"))
+    for step, p in enumerate(files, start=1):
+        segs = conv.segments(conv.read_text(p))
+        ev, mtype = conv.event_of(segs)
+        bid = f"scenario-{ev.lower()}"
+        name = SCENARIO_STEPS[ev]
+        build(o, bid, ev, mtype, segs, {"pid": [], "nk1": {}}, f"Scenario {mtype} - {name}",
+              f"Example Scenario Inpatient admission, leave and discharge, step {step}: {name}. The Encounter is the "
+              f"Hospital Provider Spell 5000123 (PV1-19), the same resource in every message of the scenario.",
+              enc_id=SCENARIO_ENCOUNTER)
+        md += [f"#### {step}. {mtype.split('^')[0]}^{ev} {name}", "", "```", *segs, "```", "",
+               f"FHIR Message: [{bid}](Bundle-{bid}.html)", ""]
+    pathlib.Path(dest).write_text("\n".join(o.lines) + "\n")
+    pathlib.Path(include).parent.mkdir(parents=True, exist_ok=True)
+    pathlib.Path(include).write_text("\n".join(md))
+    print(f"wrote {len(files)} scenario FHIR Messages to {dest} and the v2.5.1 messages to {include}")
+
+
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    if sys.argv[1] == "--scenario":
+        scenario(sys.argv[2], sys.argv[3], sys.argv[4])
+    else:
+        main(sys.argv[1], sys.argv[2])

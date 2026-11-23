@@ -21,27 +21,29 @@ sequenceDiagram
 
 ### Events and recipients
 
-| Step | Event | IHE option | Visit (PV1-19) | Hospital Provider Spell (PID-18) | Encounter after the event | GP Practice | Social Care | FHIR Message |
-|------|-------|------------|----------------|----------------------------------|---------------------------|:-----------:|:-----------:|--------------|
-| 1 | ADT^A01 Admit | Basic Subset | 2139 | 5000123 | `in-progress` | ✓ | | [hscic-a01-encounter](Bundle-hscic-a01-encounter.html) |
-| 2 | ADT^A21 Leave of absence | Advanced Encounter Management | 1164 | 5000123 | `onleave` | ✓ | | [hscic-a21-advanced](Bundle-hscic-a21-advanced.html) |
-| 3 | ADT^A22 Return from leave | Advanced Encounter Management | 1164 | 5000123 | `in-progress` | ✓ | | [hscic-a22-advanced](Bundle-hscic-a22-advanced.html) |
-| 4 | ADT^A16 Pending discharge | Pending Event Management | 1114 | 5000123 | `in-progress`, expected discharge (PV2-9) | | ✓ | [hscic-a16-pending](Bundle-hscic-a16-pending.html) |
-| 5 | ADT^A03 Discharge | Basic Subset | YOR123456 | 5000123 | `finished`, discharge destination | ✓ | ✓ | [hscic-a03-encounter](Bundle-hscic-a03-encounter.html) |
+| Step | Event | IHE option | Date/time (EVN-2) | Encounter after the event | GP Practice | Social Care | FHIR Message |
+|------|-------|------------|-------------------|---------------------------|:-----------:|:-----------:|--------------|
+| 1 | ADT^A01 Admit | Basic Subset | 2 Nov 2026 14:30 | `in-progress`, `period.start` | ✓ | | [scenario-a01](Bundle-scenario-a01.html) |
+| 2 | ADT^A21 Leave of absence | Advanced Encounter Management | 6 Nov 2026 10:00 | `onleave` | ✓ | | [scenario-a21](Bundle-scenario-a21.html) |
+| 3 | ADT^A22 Return from leave | Advanced Encounter Management | 8 Nov 2026 18:00 | `in-progress` | ✓ | | [scenario-a22](Bundle-scenario-a22.html) |
+| 4 | ADT^A16 Pending discharge | Pending Event Management | 10 Nov 2026 09:00 | `in-progress`, expected discharge 12 Nov 2026 11:00 (PV2-9) | | ✓ | [scenario-a16](Bundle-scenario-a16.html) |
+| 5 | ADT^A03 Discharge | Basic Subset | 12 Nov 2026 11:30 | `finished`, `period.end`, discharge destination | ✓ | ✓ | [scenario-a03](Bundle-scenario-a03.html) |
 {:.grid}
 
 ### Hospital Provider Spell
 
-The steps use the HSCIC ITK example messages, which record each event against a different **visit** (`PV1-19`). A Consumer ties them together into one stay as an admitted patient with the **Hospital Provider Spell** number:
+Every message identifies the same stay as an admitted patient, the **Hospital Provider Spell** `5000123`:
 
-- in HL7 v2.5.1, `PID-18` Patient Account Number with CX-5 = `AN` (e.g. `5000123^^^SPELLID^AN`);
-- in FHIR, `Encounter.partOf` as a logical reference by [Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html).
+- in HL7 v2.5.1, `PV1-19` Visit Number with CX-5 = `AN` (`5000123^^^RCB^AN`);
+- in FHIR, `Encounter.identifier` ([Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html)) of the same Encounter resource, `Encounter/inpatient-spell-5000123`, in every message. Each message carries the Encounter as it is after the event, so a Consumer updates one Encounter rather than creating a new one.
 
-HL7 v2 Table 0203 has no Hospital Provider Spell type, so `AN` (Account number) is used as an interim workaround. The HSCIC originals do not carry PID-18: it is added to these five examples for this scenario (see [HSCIC ITK Example Messages](hscic-examples.html), where it is listed as a change).
+HL7 v2 Table 0203 has no Hospital Provider Spell type, so `AN` (Account number) is used as an interim workaround.
 
-<div class="alert alert-info">
-The message dates come from the separate HSCIC ITK examples (February to October 2010), so they are not in the order of the scenario steps. Read the scenario for the sequence of events and the spell identifier, not for the dates.
-</div>
+### HL7 v2.5.1 messages
+
+The messages as sent by the PAS to the integration engine. The engine forwards them unchanged to the GP practice and social care, apart from MSH-5/MSH-6.
+
+{% include scenario-inpatient-leave-discharge-v2.md %}
 
 ### Routing
 

@@ -5,6 +5,7 @@ InstanceOf:  PAMPatient
 Title:       "Patient - EDITESTPATIENT TEN (HSCIC ITK examples)"
 Description: "The HSCIC ITK example patient (PID, PD1), with the test identifier substitutions, shared by all the HSCIC FHIR Message examples"
 Usage:       #example
+* identifier[nhsNumber].type = $v2-0203#NH
 * identifier[nhsNumber].system = $nhs-number
 * identifier[nhsNumber].value = "9999999557"
 * name[+].use = #official
@@ -171,7 +172,8 @@ InstanceOf:  PAMPatient
 Title:       "Patient - non-surviving record (MRG) - A40"
 Usage:       #inline
 * active = false
-* identifier[localPatientIdentifier][+].value = "22789"
+* identifier[localPatientIdentifier][+].type = $v2-0203#MR
+* identifier[localPatientIdentifier][=].value = "22789"
 * identifier[localPatientIdentifier][=].assigner.identifier.system = $ods-code
 * identifier[localPatientIdentifier][=].assigner.identifier.value = "RCB"
 * name[+].use = #official
@@ -338,9 +340,16 @@ Instance:    hscic-a13-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A13"
 Usage:       #inline
-* identifier[visitNumber].value = "YOR123456"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000102"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "YOR123456"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -411,9 +420,16 @@ Instance:    hscic-a11-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A11"
 Usage:       #inline
-* identifier[visitNumber].value = "2139"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000101"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2139"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #cancelled
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -479,9 +495,16 @@ Instance:    hscic-a03-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A03"
 Usage:       #inline
-* identifier[visitNumber].value = "YOR123456"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000102"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "YOR123456"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #finished
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -504,11 +527,6 @@ Usage:       #inline
 * location[+].location.identifier.value = "OBS1"
 * location[=].location.display = "RCB OBS1 BAY2-6"
 * location[=].status = #completed
-* partOf.identifier.type = $v2-0203#AN
-* partOf.identifier.value = "5000123"
-* partOf.identifier.assigner.identifier.system = $ods-code
-* partOf.identifier.assigner.identifier.value = "RCB"
-* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * reasonCode[+].text = "ADMIT13"
@@ -559,9 +577,16 @@ Instance:    hscic-a01-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A01"
 Usage:       #inline
-* identifier[visitNumber].value = "2139"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000101"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2139"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -582,11 +607,6 @@ Usage:       #inline
 * location[+].location.identifier.value = "OBS1"
 * location[=].location.display = "RCB OBS1 BAY2-6"
 * location[=].status = #active
-* partOf.identifier.type = $v2-0203#AN
-* partOf.identifier.value = "5000123"
-* partOf.identifier.assigner.identifier.system = $ods-code
-* partOf.identifier.assigner.identifier.value = "RCB"
-* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * extension[+].url = "https://fhir.ihe-uk.org/ITI/PAM/StructureDefinition/Extension-DecisionToAdmitDateTime"
@@ -675,9 +695,16 @@ Instance:    hscic-a05-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A05"
 Usage:       #inline
-* identifier[visitNumber].value = "4532"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000105"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "4532"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #planned
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -752,9 +779,16 @@ Instance:    hscic-a04-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A04"
 Usage:       #inline
-* identifier[visitNumber].value = "2141"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000104"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2141"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #arrived
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -851,9 +885,16 @@ Instance:    hscic-a08-encounter-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A08"
 Usage:       #inline
-* identifier[visitNumber].value = "2140"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000103"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2140"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -943,9 +984,16 @@ Instance:    hscic-a13-encounter-master-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A13"
 Usage:       #inline
-* identifier[visitNumber].value = "11554"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000111"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "11554"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1054,9 +1102,16 @@ Instance:    hscic-a03-encounter-master-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A03"
 Usage:       #inline
-* identifier[visitNumber].value = "11554"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000111"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "11554"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #finished
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1127,9 +1182,16 @@ Instance:    hscic-a04-encounter-master-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A04"
 Usage:       #inline
-* identifier[visitNumber].value = "2141"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000104"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2141"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #arrived
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1226,9 +1288,16 @@ Instance:    hscic-a38-inout-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A38"
 Usage:       #inline
-* identifier[visitNumber].value = "2131"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000106"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2131"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #cancelled
 * class = $v3-ActCode#PRENC
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1314,9 +1383,16 @@ Instance:    hscic-a12-inout-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A12"
 Usage:       #inline
-* identifier[visitNumber].value = "1223"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000107"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1223"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1401,9 +1477,16 @@ Instance:    hscic-a05-inout-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A05"
 Usage:       #inline
-* identifier[visitNumber].value = "2131"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000106"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2131"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #planned
 * class = $v3-ActCode#PRENC
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1475,9 +1558,16 @@ Instance:    hscic-a02-inout-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A02"
 Usage:       #inline
-* identifier[visitNumber].value = "1223"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000107"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1223"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1553,9 +1643,16 @@ Instance:    hscic-a12-inout-master-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A12"
 Usage:       #inline
-* identifier[visitNumber].value = "2347"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000112"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2347"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1642,9 +1739,16 @@ Instance:    hscic-a02-inout-master-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A02"
 Usage:       #inline
-* identifier[visitNumber].value = "2347"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000112"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "2347"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1718,9 +1822,16 @@ Instance:    hscic-a27-pending-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A27"
 Usage:       #inline
-* identifier[visitNumber].value = "1115"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000108"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1115"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #cancelled
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1790,9 +1901,16 @@ Instance:    hscic-a25-pending-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A25"
 Usage:       #inline
-* identifier[visitNumber].value = "1114"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000109"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1114"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1861,9 +1979,16 @@ Instance:    hscic-a26-pending-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A26"
 Usage:       #inline
-* identifier[visitNumber].value = "1114"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000109"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1114"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -1935,9 +2060,16 @@ Instance:    hscic-a14-pending-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A14"
 Usage:       #inline
-* identifier[visitNumber].value = "1115"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000108"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1115"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #planned
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2034,9 +2166,16 @@ Instance:    hscic-a16-pending-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A16"
 Usage:       #inline
-* identifier[visitNumber].value = "1114"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000109"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1114"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2058,11 +2197,6 @@ Usage:       #inline
 * location[+].location.identifier.value = "RECOVERY_WARD"
 * location[=].location.display = "West Wing RECOVERY_WARD BED3"
 * location[=].status = #active
-* partOf.identifier.type = $v2-0203#AN
-* partOf.identifier.value = "5000123"
-* partOf.identifier.assigner.identifier.system = $ods-code
-* partOf.identifier.assigner.identifier.value = "RCB"
-* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * extension[+].url = "https://fhir.ihe-uk.org/ITI/PAM/StructureDefinition/Extension-PlannedEndDate"
@@ -2112,9 +2246,16 @@ Instance:    hscic-a15-pending-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A15"
 Usage:       #inline
-* identifier[visitNumber].value = "1114"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000109"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1114"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#IMP
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2186,9 +2327,16 @@ Instance:    hscic-a52-advanced-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A52"
 Usage:       #inline
-* identifier[visitNumber].value = "1164"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000110"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1164"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2252,9 +2400,16 @@ Instance:    hscic-a53-advanced-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A53"
 Usage:       #inline
-* identifier[visitNumber].value = "1164"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000110"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1164"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #onleave
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2318,9 +2473,16 @@ Instance:    hscic-a21-advanced-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A21"
 Usage:       #inline
-* identifier[visitNumber].value = "1164"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000110"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1164"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #onleave
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2339,11 +2501,6 @@ Usage:       #inline
 * location[+].location.identifier.value = "RCB-ONC"
 * location[=].location.display = "West Wing RCB-ONC BED5"
 * location[=].status = #active
-* partOf.identifier.type = $v2-0203#AN
-* partOf.identifier.value = "5000123"
-* partOf.identifier.assigner.identifier.system = $ods-code
-* partOf.identifier.assigner.identifier.value = "RCB"
-* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * reasonCode[+].text = "Continuation"
@@ -2392,9 +2549,16 @@ Instance:    hscic-a22-advanced-encounter
 InstanceOf:  PAMEncounter
 Title:       "Encounter - A22"
 Usage:       #inline
-* identifier[visitNumber].value = "1164"
-* identifier[visitNumber].assigner.identifier.system = $ods-code
-* identifier[visitNumber].assigner.identifier.value = "RCB"
+* identifier[hospitalProviderSpell].use = #official
+* identifier[hospitalProviderSpell].type = $v2-0203#AN
+* identifier[hospitalProviderSpell].value = "5000110"
+* identifier[hospitalProviderSpell].assigner.identifier.system = $ods-code
+* identifier[hospitalProviderSpell].assigner.identifier.value = "RCB"
+* identifier[alternateVisitId].use = #secondary
+* identifier[alternateVisitId].type = $v2-0203#VN
+* identifier[alternateVisitId].value = "1164"
+* identifier[alternateVisitId].assigner.identifier.system = $ods-code
+* identifier[alternateVisitId].assigner.identifier.value = "RCB"
 * status = #in-progress
 * class = $v3-ActCode#AMB
 * subject = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
@@ -2413,11 +2577,6 @@ Usage:       #inline
 * location[+].location.identifier.value = "RCB-ONC"
 * location[=].location.display = "West Wing RCB-ONC BED5"
 * location[=].status = #active
-* partOf.identifier.type = $v2-0203#AN
-* partOf.identifier.value = "5000123"
-* partOf.identifier.assigner.identifier.system = $ods-code
-* partOf.identifier.assigner.identifier.value = "RCB"
-* partOf.display = "Hospital Provider Spell 5000123"
 * serviceProvider.identifier.system = $ods-code
 * serviceProvider.identifier.value = "RCB"
 * reasonCode[+].text = "Continuation"

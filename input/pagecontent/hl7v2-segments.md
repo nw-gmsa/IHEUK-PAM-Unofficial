@@ -54,7 +54,6 @@ Segment definitions for HL7 v2.5.1, derived from HSCIC ITK section 5. Only field
 | 15 | Primary Language | CE | O | [0..1] | 0296 | ISO 639-1 plus 5 'q' codes for non-spoken languages | communication.language |
 | 16 | Marital Status | CE | O | [0..1] | 0002 | NHS DD Person Marital Status | maritalStatus |
 | 17 | Religion | CE | O | [0..1] | 0006 | | extension: patient-religion |
-| 18 | Patient Account Number | CX | C | [0..1] | 0203 | **Hospital Provider Spell** number (CX-5 = `AN`). HSCIC ITK 5.3.8: ties the patient to an incidence of care, such as a stay as an admitted patient; conditionally required for messages about a specific incidence of care, not for A14, A28, A31. **v2.5.1**: required for admitted patient care events in ITI-31 (HSCIC: not used in ITK) | Encounter.partOf.identifier ([Hospital Provider Spell Identifier](StructureDefinition-HospitalProviderSpellIdentifier.html)) |
 | 21 | Mother's Identifier | CX | O | [0..*] | | Mother's PID-3 identifier | RelatedPerson.identifier (relationship = mother) |
 | 22 | Ethnic Group | CE | O | [0..1] | 0189 | NHS DD Ethnic Category | extension: UKCore-EthnicCategory |
 | 23 | Birth Place | ST | O | [0..1] | | 35 characters | extension: patient-birthPlace |
@@ -128,13 +127,13 @@ Example: `9449305552^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH~MRN123456^^^R0A^MR^R
 | 16 | VIP Indicator | IS | O | [0..1] | 0099 | | hospitalization.specialCourtesy |
 | 17 | Admitting Doctor | XCN | O | [0..1] | 0010 | Doctor who made the decision to admit | participant (ADM) |
 | 18 | Patient Type | IS | O | [0..1] | 0018 | | type |
-| 19 | Visit Number | CX | O (C) | [0..1] | | Unique within assigning authority and type. Required for all ITI-31 events. **v2.5.1** CX-5 = `VN` | identifier (visitNumber) |
+| 19 | Visit Number | CX | O (C) | [0..1] | | The **Hospital Provider Spell**: inpatient stay or outpatient spell. The same value in every event about the stay or spell. Unique within assigning authority and type. Required for all ITI-31 events. **v2.5.1** CX-5 = `AN` (no HL7 Hospital Provider Spell type) | identifier (hospitalProviderSpell) |
 | 36 | Discharge Disposition | IS | O | [0..1] | 0112 | NHS DD Discharge Method / A&E Attendance Disposal | extension:dischargeMethod |
 | 37 | Discharged to Location | DLD | O | [0..1] | 0113 | **v2.5.1** DLD (v2.4 CM). NHS DD Discharge Destination | hospitalization.dischargeDisposition |
 | 38 | Diet Type | CE | O | [0..1] | 0114 | | hospitalization.dietPreference |
 | 44 | Admit Date/Time | TS | C | [0..1] | | Required where present for the event; not in A05 (use PV2-8) | period.start |
 | 45 | Discharge Date/Time | TS | C | [0..1] | | Required in A03 | period.end |
-| 50 | Alternate Visit ID | CX | O | [0..1] | | e.g. consultant episode within the stay identified by PV1-19 | identifier (alternateVisitId) |
+| 50 | Alternate Visit ID | CX | O | [0..1] | | A visit within the spell identified by PV1-19: the outpatient attendance (visit number) or, for an inpatient stay, the consultant episode. **v2.5.1** CX-5 = `VN` | identifier (alternateVisitId) |
 {:.grid}
 
 ### PV2 - Patient Visit - Additional Information

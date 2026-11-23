@@ -32,4 +32,7 @@ Unofficial IHE UK national extension of IHE ITI **Patient Administration Managem
 - Diagrams are inline Mermaid.
 - Do not invent identifier system URIs. Use established systems (NHS Number, ODS, GMC/GMP) or `urn:oid:` of a real OID; otherwise omit `Identifier.system` (qualified by type + assigner). Example endpoints use `http://example.org/`.
 - Do not use parentheses or commas in RuleSet arguments (SUSHI splits on them).
+- `PV1-19` is the Hospital Provider Spell (inpatient stay or outpatient spell, CX-5 `AN`, `Encounter.identifier[hospitalProviderSpell]`); `PV1-50` is the outpatient attendance or consultant episode (CX-5 `VN`, `identifier[alternateVisitId]`). The HSCIC ADT examples are amended to this via `SPELLS` in `scripts/convert_hscic_examples.py`.
+- SUSHI does not fill in slice pattern values (`use`, `type`) in instances: set them explicitly for sliced identifiers.
+- The Example Scenario `InpatientLeaveAndDischarge` uses purpose-built HL7 v2.5.1 messages in `examples-v2/InpatientLeaveAndDischarge/` (source of truth). Their FHIR Messages (`input/fsh/Examples/ScenarioMessages.fsh`, one shared Encounter id) and page include (`input/includes/scenario-inpatient-leave-discharge-v2.md`) are **generated** by `python3 -I scripts/hscic_v2_to_fhir.py --scenario examples-v2/InpatientLeaveAndDischarge input/fsh/Examples/ScenarioMessages.fsh input/includes/scenario-inpatient-leave-discharge-v2.md`.
 - UK Core extensions have no snapshot in the package: in instances set them with `extension[+].url = $alias` rather than by slice name.

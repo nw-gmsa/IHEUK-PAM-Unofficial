@@ -85,26 +85,16 @@ HSCIC ITK `PID-4` Alternate Patient ID - **Temporary Patient Number only**. `PID
 * use = #temp
 * type = $v2-0203#MR
 
-Profile:        VisitNumber
-Parent:         PAMIdentifier
-Id:             VisitNumber
-Title:          "Visit Number"
-Description:    """
-`PV1-19` Visit Number. A unique number representing the visit, which may be an admission, an A&E attendance, a community contact or an outpatient attendance (appointment). Unique within assigning authority and number type.
-"""
-* use = #official
-* type = $v2-0203#VN
-* assigner 1..1
-
 Profile:        HospitalProviderSpellIdentifier
 Parent:         PAMIdentifier
 Id:             HospitalProviderSpellIdentifier
 Title:          "Hospital Provider Spell Identifier"
 Description:    """
-Identifier of an NHS Data Dictionary HOSPITAL PROVIDER SPELL (admission to discharge), sent in HL7 v2 `PID-18` Patient Account Number. It ties together the visits (`PV1-19`) and events of one stay as an admitted patient.
+`PV1-19` Visit Number, as the identifier of an NHS Data Dictionary [HOSPITAL PROVIDER SPELL](https://www.datadictionary.nhs.uk/nhs_business_definitions/hospital_provider_spell.html): an inpatient stay (admission to discharge) or an outpatient spell. Every event about the same stay or spell carries the same value, which ties them together. The visits within it (an outpatient attendance or a consultant episode) are identified by `PV1-50` [Alternate Visit Identifier](StructureDefinition-AlternateVisitIdentifier.html).
 
 HL7 v2 Table 0203 has no Hospital Provider Spell identifier type, so `AN` (Account number) is used as an interim workaround, as in the [NHS North West Genomics guide](https://nw-gmsa.github.io/en/StructureDefinition-HospitalProviderSpellIdentifier.html). Strictly, `AN` identifies an account rather than an encounter. This binding may change.
 """
+* use = #official
 * type = $v2-0203#AN
 * type ^short = "AN (Account number) - interim workaround, HL7 has no Hospital Provider Spell identifier type"
 * assigner 1..1
@@ -112,11 +102,13 @@ HL7 v2 Table 0203 has no Hospital Provider Spell identifier type, so `AN` (Accou
 Profile:        AlternateVisitIdentifier
 Parent:         PAMIdentifier
 Id:             AlternateVisitIdentifier
-Title:          "Alternate Visit Identifier (Consultant Episode)"
+Title:          "Alternate Visit Identifier (Visit Number / Consultant Episode)"
 Description:    """
-`PV1-50` Alternate Visit ID. HL7 UK allows this field to further qualify the Visit ID. A typical use is a **consultant episode** within an inpatient stay: `PV1-19` identifies the inpatient stay, `PV1-50` the consultant episode.
+`PV1-50` Alternate Visit ID. HL7 UK allows this field to further qualify the Visit ID. It identifies a visit within the [Hospital Provider Spell](StructureDefinition-HospitalProviderSpellIdentifier.html) in `PV1-19`: for an outpatient, the attendance (visit number); for an inpatient stay, the **consultant episode**.
 """
 * use = #secondary
+* type = $v2-0203#VN
+* assigner 1..1
 
 Profile:        ODSOrganisationCode
 Parent:         Identifier

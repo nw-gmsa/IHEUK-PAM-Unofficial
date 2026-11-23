@@ -82,7 +82,7 @@ HL7 v2.5.1 allows Z segments anywhere in a message. To match HSCIC ITK and keep 
 
 ### Expected Actions
 
-- The Consumer **shall** apply the event to the encounter identified by **PV1-19 Visit Number**, for the patient identified by PID-3.
+- The Consumer **shall** apply the event to the encounter identified by **PV1-19 Visit Number** (the Hospital Provider Spell, CX-5 `AN`), for the patient identified by PID-3. Where `PV1-50` Alternate Visit ID is valued, the event is about that visit (outpatient attendance or consultant episode) within the spell.
 - An event that the Consumer receives for an unknown visit (for example A03 without a prior A01) **should** create the encounter, rather than be rejected, unless local policy says otherwise.
 - **Sequencing:** messages can arrive out of sequence in multi-hop environments. Consumers **should** use EVN-6 Event Occurred together with MSH-7 and MSH-13 Sequence Number to detect and resolve this (HSCIC ITK 5.1, 5.2).
 - Cancel events (A11, A12, A13, A25, A26, A27, A38, A52, A53) **shall** reverse the matching insert event. A cancel that does not match the current state of the encounter **should** be application-rejected (`AE`).
