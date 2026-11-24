@@ -36,22 +36,27 @@ Both are needed. Events keep systems in step and start work. Queries ([PDQm](PDQ
 
 ### Illustrative use cases
 
-The examples below show, in plain terms, what one event from the PAS does across a typical NHS Trust. In each case the PAS records the activity once, and the other systems act without anyone re-keying it.
+The examples below show, in plain terms, what one event can do across the patient's care, both inside the hospital and for other organisations already caring for the patient (GP practice, community nursing, social care, mental health services, care homes). In each case the hospital records the activity once, and every interested system is told, without anyone re-keying it or making a phone call.
 
-| What happens to the patient | Event | What the event makes happen elsewhere |
-|-----------------------------|-------|---------------------------------------|
-| A patient is booked for a planned operation next week | A05 Pre-admit | Theatres can schedule the case. Pre-operative tests can be requested against the right patient and stay. |
-| A patient arrives in the Emergency Department | A04 Register | The ED system, the lab and radiology know who the patient is, so the first blood test and X-ray are labelled correctly. |
-| The patient is admitted to a ward | A01 Admit | The bed board shows the bed as taken. Pharmacy can supply medicines to the ward. The shared care record shows the patient is in hospital. Catering gets dietary needs. |
-| The patient moves to another ward | A02 Transfer | Results, medicines and porters go to the new ward. Nurse-call and bed management are updated. If the move was entered by mistake, A12 Cancel Transfer puts everything back. |
-| The patient goes home for the weekend and comes back | A21 Leave / A22 Return | The bed is kept but shown as empty. Medicines rounds and observations are paused, then restarted. See the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html). |
-| The patient is discharged | A03 Discharge | The bed is released. The discharge summary process starts. Community services and the GP can be told. Future ward-based orders stop. |
-| The patient moves house and the GP updates the national record (PDS) | A31 Update Patient | Appointment letters and results go to the new address in every system. See the [PDS Notifications scenario](scenario-pds-notifications.html). |
+| What happens to the patient | Event | Who is told, and what they can do |
+|-----------------------------|-------|-----------------------------------|
+| A planned admission is booked | A05 Pre-admit | Hospital teams can prepare (theatre lists, pre-operative tests). Carers and community teams can plan around the admission date. |
+| The patient attends an emergency department or a hospital appointment | A04 Register | Hospital systems (lab, radiology) know who the patient is, so tests are labelled correctly. The GP and other care providers can be told the patient **has attended**. The clinic letter that follows is a separate document (see the note below). |
+| The patient is admitted to hospital | A01 Admit | The GP and other providers currently giving care (community nursing, social care, care home) learn the patient is in hospital. They can take action, such as **cancelling a home visit**, pausing a care package, or not chasing a missed appointment. Inside the hospital, ward, bed and pharmacy systems are updated. |
+| The patient moves ward or site | A02 Transfer | Everyone involved knows where the patient now is, so results, medicines and visitors go to the right place. If the move was entered by mistake, A12 Cancel Transfer puts everything back. |
+| The patient goes home on leave and comes back | A21 Leave / A22 Return | The hospital keeps the bed. Community teams know the patient is at home for a period and may need support. See the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html). |
+| The hospital plans to discharge the patient | A16 Pending Discharge | Social care, community teams, the GP or a care home learn **in advance** that the hospital is planning to discharge the patient, with the expected date (PV2-9). They can **prepare**: arrange a care package, equipment or a care home place, so that the patient is not kept in hospital waiting for support. If the plan changes, A25 Cancel Pending Discharge tells them. |
+| The patient is discharged | A03 Discharge | The event is a **trigger**: home visits and care packages can **restart**, and social care, the GP or a care home know the patient **is arriving home**. Inside the hospital, the bed is released. |
+| The patient's details change (address, phone, GP) | A31 Update Patient | Every system that holds the patient updates its copy, so letters, visits and results reach the patient. The change may come from the national demographic service; see the [PDS Notifications scenario](scenario-pds-notifications.html) for one example. |
 | Two records turn out to be the same person | A40 Merge | Results and history held under the duplicate record are brought together, so clinicians see the whole picture. |
-| The patient dies | A31 (death date) or A03 (died in hospital) | Future appointments and reminder letters can be stopped, avoiding distress to the family. |
+| The patient dies | A31 (date of death) or A03 (died in hospital) | All providers can stop future appointments, visits and reminder letters, avoiding distress to the family. |
 {:.grid}
 
-Without events, each of these systems would have to keep asking the PAS whether anything had changed, or staff would have to enter the same information several times. Both are slow and lead to errors.
+<div class="alert alert-warning">
+<b>An event is not a report.</b> An attendance (A04) or a discharge (A03) event says only that something <b>has happened</b> (the patient attended, the patient has left hospital), at the moment it happens. GPs, social care and other providers will usually also receive a <b>hospital discharge report</b>: a clinic letter after an appointment or a discharge summary after an inpatient stay. That is a clinical document with diagnoses, medicines and follow-up actions. It is written and sent separately, often later, and is not part of IHE PAM. The two should not be confused: the event starts practical actions (restarting visits, expecting the patient home, knowing the patient attended), and the report informs clinical care.
+</div>
+
+Without events, each of these organisations would have to keep checking whether anything had changed, or staff would have to phone, email or re-enter the same information several times. Both are slow and lead to errors, such as a nurse visiting an empty house while the patient is in hospital.
 
 ### Events and FHIR
 
