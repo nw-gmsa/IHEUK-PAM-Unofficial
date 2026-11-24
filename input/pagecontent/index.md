@@ -21,6 +21,10 @@ It brings together, in one place:
 2. **HL7 v2.5.1.** The HSCIC content has been moved from v2.4 to v2.5.1, which IHE PAM requires (v2.5). See [Changes from HSCIC ITK v2.4](hscic-changes.html).
 3. **HL7 FHIR R4.** The v2 segments are mapped to FHIR profiles based on [HL7 Europe Base](https://hl7.eu/fhir/base/). UK Core extensions and NHS Data Dictionary terminology are used where they exist. FHIR Messaging equivalents of the ADT trigger events are also defined. See the [HL7 v2 to FHIR Mapping](v2-fhir-mapping.html).
 
+<div class="alert alert-warning">
+<b>What "ITK" means in this guide.</b> When this guide refers to <b>HSCIC ITK</b>, it means <b>only the HL7 v2 ADT message content in the standard "pipe and hat" (ER7) format</b>, for example <code>PID|1||9449305552^^^NHS...</code>. It does <b>not</b> include the rest of the ITK framework: the HL7 v2 XML encoding, the ITK SOAP web services and Distribution Envelope, the ITK infrastructure and business acknowledgements, or ITK addressing and routing. Those extra technical layers made ITK hard to implement and put many NHS Trusts off adopting it. Trusts have mostly exchanged ADT in pipe and hat over MLLP through their integration engines, and that is what this guide builds on.
+</div>
+
 ### Scope
 
 ```mermaid
@@ -48,7 +52,7 @@ flowchart LR
 Out of scope for this version:
 
 - The HL7 v2 HSCIC ITK queries (QBP^Q21 Get Person Demographics, QBP^Q22 Find Candidates, QBP^ZV1 Patient Demographics and Visit Query) are IHE [Patient Demographics Query (PDQ)](https://profiles.ihe.net/ITI/TF/Volume1/ch-8.html) transactions ITI-21 and ITI-22, which are not profiled. Their FHIR equivalents are covered by [PDQm](PDQm.html).
-- HSCIC ITK transport (ITK web services / SOAP wrappers). This guide assumes MLLP for HL7 v2 and FHIR Messaging ($process-message) for FHIR.
+- HSCIC ITK transport and encodings other than pipe and hat (HL7 v2 XML, ITK web services / SOAP, Distribution Envelope, ITK acknowledgements). This guide assumes MLLP for HL7 v2 and FHIR Messaging ($process-message) for FHIR.
 
 ### Contents
 

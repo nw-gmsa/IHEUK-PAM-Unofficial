@@ -414,6 +414,10 @@ flowchart LR
 
 Replacing the PAS event feed with "systems call a FHIR API" moves the work to every receiver. Each must poll for changes, work out what has changed, and guess why. The event feed already answers all three.
 
+<div class="alert alert-warning">
+<b>What "ITK" means in this guide.</b> When this guide refers to <b>HSCIC ITK</b>, it means <b>only the HL7 v2 ADT message content in the standard "pipe and hat" (ER7) format</b>, for example <code>PID|1||9449305552^^^NHS...</code>. It does <b>not</b> include the rest of the ITK framework: the HL7 v2 XML encoding, the ITK SOAP web services and Distribution Envelope, the ITK infrastructure and business acknowledgements, or ITK addressing and routing. Those extra technical layers made ITK hard to implement and put many NHS Trusts off adopting it. Trusts have mostly exchanged ADT in pipe and hat over MLLP through their integration engines, and that is what this guide builds on.
+</div>
+
 ### How the pieces fit
 
 ```mermaid
