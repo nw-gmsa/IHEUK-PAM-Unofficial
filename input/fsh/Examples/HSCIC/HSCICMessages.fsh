@@ -179,6 +179,9 @@ Usage:       #inline
 * name[+].use = #official
 * name[=].family = "Unknown"
 * link[+].other = Reference(Patient-EDITESTPATIENT-TEN-9999999557)
+* link[=].other.identifier.system = $nhs-number
+* link[=].other.identifier.value = "9999999557"
+* link[=].other.type = "Patient"
 * link[=].type = #replaced-by
 
 Instance:    hscic-a40-identity

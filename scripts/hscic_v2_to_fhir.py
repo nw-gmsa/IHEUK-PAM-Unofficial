@@ -299,7 +299,13 @@ def build(o, bid, ev, mtype, v251, shared, title, description, enc_id=None):
             o.r('identifier[localPatientIdentifier][=].assigner.identifier.value = "RCB"')
         o.r('name[+].use = #official')
         o.r('name[=].family = "Unknown"')
+        # link.other carries both the literal reference (resolvable in the Bundle) and the surviving NHS Number
         o.r(f"link[+].other = Reference({pat})")
+        nhs = [comp(rep, 1) for rep in conv.get(pid, 3).split("~") if comp(rep, 5) == "NH"]
+        if nhs:
+            o.r("link[=].other.identifier.system = $nhs-number")
+            o.r(f"link[=].other.identifier.value = {q(nhs[0])}")
+        o.r('link[=].other.type = "Patient"')
         o.r("link[=].type = #replaced-by")
         entries.append(("Patient", f"{bid}-prior-patient"))
 

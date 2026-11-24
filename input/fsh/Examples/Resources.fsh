@@ -182,7 +182,8 @@ Usage:       #example
 * name[=].given[+] = "Octavia"
 * gender = #female
 * birthDate = "2008-09-20"
-* link[+].other.identifier.system = $nhs-number
+* link[+].other = Reference(Patient-OctaviaCHISLETT-9449305552)
+* link[=].other.identifier.system = $nhs-number
 * link[=].other.identifier.value = "9449305552"
 * link[=].other.type = "Patient"
 * link[=].type = #replaced-by

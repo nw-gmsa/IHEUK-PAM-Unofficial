@@ -1,6 +1,6 @@
 // Example Scenario: PDS Notifications (MNS) - Example 3 NHS Number change (nhs-number-change-2) as ADT^A40.
-// Patient.link.other uses the NHS Number (Reference.identifier), not a literal reference, so that receivers
-// can resolve the linked record against their own patient index.
+// Patient.link.other carries both a literal reference to the other Patient in the Bundle and its NHS Number
+// (Reference.identifier), so that receivers can also resolve the linked record against their own patient index.
 
 Instance:    Patient-PDS-OctaviaCHISLETT-9449310602
 InstanceOf:  PAMPatient
@@ -44,7 +44,8 @@ Usage:       #example
 * generalPractitioner[+].identifier.system = $gmp-number
 * generalPractitioner[=].identifier.value = "G1234560"
 * generalPractitioner[=].type = "Practitioner"
-* link[+].other.identifier.system = $nhs-number
+* link[+].other = Reference(Patient-PDS-Superseded-9449305552)
+* link[=].other.identifier.system = $nhs-number
 * link[=].other.identifier.value = "9449305552"
 * link[=].other.type = "Patient"
 * link[=].type = #replaces
@@ -64,7 +65,8 @@ Usage:       #example
 * name[=].given[+] = "Octavia"
 * gender = #female
 * birthDate = "2008-09-20"
-* link[+].other.identifier.system = $nhs-number
+* link[+].other = Reference(Patient-PDS-OctaviaCHISLETT-9449310602)
+* link[=].other.identifier.system = $nhs-number
 * link[=].other.identifier.value = "9449310602"
 * link[=].other.type = "Patient"
 * link[=].type = #replaced-by
@@ -91,7 +93,7 @@ Usage:       #inline
 Instance:    Bundle-PDS-ADT-A40-NHSNumberChange
 InstanceOf:  PAMBundleMessage
 Title:       "Message - ADT^A40 NHS Number change from PDS (nhs-number-change-2) [ITI-30]"
-Description: "FHIR Message equivalent of the ADT^A40 in the PDS Notifications scenario (Example 3). The record with the superseded NHS Number (MRG-1) is replaced-by the record with the new NHS Number (PID-3). Patient.link.other references the linked Patient by NHS Number."
+Description: "FHIR Message equivalent of the ADT^A40 in the PDS Notifications scenario (Example 3). The record with the superseded NHS Number (MRG-1) is replaced-by the record with the new NHS Number (PID-3). Patient.link.other references the linked Patient in the Bundle and by NHS Number."
 Usage:       #example
 * insert MessageBundle("urn:uuid:b4413162-76d6-4ee1-98ef-dedf013a8a40", "2026-11-24T14:15:30Z")
 * insert Entry("https://fhir.ihe-uk.org/ITI/PAM/MessageHeader/MessageHeader-PDS-A40", MessageHeader-PDS-A40)
