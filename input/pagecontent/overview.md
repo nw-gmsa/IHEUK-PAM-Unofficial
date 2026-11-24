@@ -153,7 +153,7 @@ The diagrams below follow typical clinical pathways and show the events sent alo
 An admission usually starts with a document: a referral (for example from the GP) or, for emergencies, the ambulance crew's handover to the emergency department. It ends with a Hospital Discharge Report. The admission, leave, return, discharge planning and discharge steps are the [Inpatient admission, leave and discharge](ExampleScenario-InpatientLeaveAndDischarge.html) Example Scenario. All events in the stay carry the same Hospital Provider Spell (PV1-19).
 
 ```mermaid
-flowchart LR
+flowchart TB
     REF("Referral or<br/>ambulance to ED handover")
     DTA["Decision to admit"]
     ADM["Admitted to ward"]
@@ -169,6 +169,7 @@ flowchart LR
     E22>"A22 Return from Leave"]
     E16>"A16 Pending Discharge"]
     E03>"A03 Discharge"]
+    E14 ~~~ E01 ~~~ E21 ~~~ E22 ~~~ E16 ~~~ E03
     DTA -.-> E14
     ADM -.-> E01
     LOA -.-> E21
@@ -231,12 +232,11 @@ The home visits are where most of the care happens. Many different people may vi
 - **Visitor arrives (A04)** and **visit ends (A03)**: others know the patient has been seen, by whom and when. Lone-worker and safety checks can also use them.
 
 ```mermaid
-flowchart LR
+flowchart TB
     IPDIS["Leaves hospital ward"]
     REF("Referral or handover<br/>to the virtual ward")
     START["Starts on the virtual ward"]
     subgraph VISIT ["Each home visit: GP, community nurse, social worker, therapist ..."]
-        direction LR
         VPLAN["Visit planned"]
         VARR["Visitor arrives"]
         VCARE["Care given"]
@@ -261,6 +261,7 @@ flowchart LR
     EV38>"A38 Cancel Pre-admit"]
     E16>"A16 Pending Discharge"]
     E03>"A03 Discharge"]
+    EIP03 ~~~ ES04 ~~~ EV05 ~~~ EV04 ~~~ EV03 ~~~ E16 ~~~ E03
     IPDIS -.-> EIP03
     START -.-> ES04
     VPLAN -.-> EV05
@@ -313,7 +314,7 @@ With [Message Routing](https://www.enterpriseintegrationpatterns.com/patterns/me
 flowchart LR
     PAS["PAS"]
     EVT>"A01 Admit"]
-    TIE{{"Integration engine<br/>content-based router"}}
+    TIE[["Integration engine<br/>content-based router"]]
     LIMS["LIMS"]
     PHARM["Pharmacy"]
     GP["Patient's GP system<br/>(from PD1-3)"]
@@ -337,7 +338,7 @@ With a [Publish-Subscribe Channel](https://www.enterpriseintegrationpatterns.com
 flowchart LR
     PDS["PDS"]
     EVT>"pds-record-change-2"]
-    MNS{{"MNS<br/>publish-subscribe"}}
+    MNS[["MNS<br/>publish-subscribe"]]
     T1["Trust A<br/>(subscribed)"]
     T2["Trust B<br/>(subscribed)"]
     T3["GP system<br/>(subscribed)"]
