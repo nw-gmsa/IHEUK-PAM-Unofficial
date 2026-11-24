@@ -1,7 +1,7 @@
-This scenario shows how a Trust keeps its patient records in step with the [Personal Demographics Service (PDS)](https://digital.nhs.uk/services/personal-demographics-service) using the NHS England [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service). It then shows how each change is passed to local systems as an [ADT^A31 Update Patient Information [ITI-30]](ITI-30.html).
+This scenario shows how a Trust keeps its patient records in step with the [Personal Demographics Service (PDS)](https://digital.nhs.uk/services/personal-demographics-service) using the NHS England [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service). It then shows how each change is passed to local systems as an [ADT^A31 Update Patient Information [ITI-30]](ITI-30.html), or, for an NHS Number change, an [ADT^A40 Merge Patient - Patient Identifier List [ITI-30]](ITI-30.html).
 
 <div class="alert alert-info">
-<b>Summary:</b> MNS events are <b>signals only</b> and contain no demographic data. On every event the subscriber <b>shall</b> retrieve the current record from the PDS FHIR API. It then <b>shall</b> send the result to Patient Demographics Consumers as an <b>ADT^A31</b>, whichever MNS event started the process.
+<b>Summary:</b> MNS events are <b>signals only</b> and contain no demographic data. On every event the subscriber <b>shall</b> retrieve the current record from the PDS FHIR API. It then <b>shall</b> send the result to Patient Demographics Consumers as an <b>ADT^A31</b>, except for an NHS Number change, which <b>shall</b> be sent as an <b>ADT^A40</b> (Merge Option).
 </div>
 
 ### MNS events used
@@ -10,7 +10,7 @@ This scenario shows how a Trust keeps its patient records in step with the [Pers
 |-----------|------------|-------------|-----------|--------|
 | [PDS change event](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service/pds-change-event) | `pds-record-change-2` | A patient record is created or updated in PDS (name, address, telecom, GP, gender, birth date, security flag, ...) | NHS Number of the patient | ADT^A31 with the updated demographics |
 | [Death notification event](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service/death-notification-event) | `pds-death-notification-2` | The patient's death status in PDS changes, either to deceased or back to not deceased (death removed) | NHS Number of the patient | ADT^A31 with PID-29 / PID-30 |
-| [NHS number change event](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service/nhs-number-change-event) | `nhs-number-change-2` | The patient's NHS Number is changed in PDS | The **original** NHS Number. The new number is retrieved from PDS | ADT^A31 with the new NHS Number in PID-3 |
+| [NHS number change event](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service/nhs-number-change-event) | `nhs-number-change-2` | The patient's NHS Number is changed in PDS | The **original** NHS Number. The new number is retrieved from PDS | ADT^A40 with the new NHS Number in PID-3 and the original NHS Number in MRG-1 |
 {:.grid}
 
 The `-1` versions of `pds-death-notification` and `nhs-number-change` are deprecated. Implementers **shall** use the `-2` events.
@@ -21,11 +21,11 @@ The `-1` versions of `pds-death-notification` and `nhs-number-change` are deprec
 |--------|-----------------------|-----------|
 | PDS | Publishes the change events. Source of truth for national demographics | - |
 | MNS | Delivers events to subscribers (FHIR notification or CloudEvent, over MESH or SQS) | - |
-| Trust Integration Engine (TIE) or PAS | Subscribes to MNS, calls the PDS FHIR API, updates the Trust master patient record, sends ADT^A31 | [Patient Demographics Supplier](ActorDefinition-PatientDemographicsSupplier.html), PIX Patient Identity Source |
-| Downstream systems (LIMS, RIS, EPR modules) | Receive ADT^A31 and update their local copy | [Patient Demographics Consumer](ActorDefinition-PatientDemographicsConsumer.html) |
+| Trust Integration Engine (TIE) or PAS | Subscribes to MNS, calls the PDS FHIR API, updates the Trust master patient record, sends ADT^A31 or ADT^A40 | [Patient Demographics Supplier](ActorDefinition-PatientDemographicsSupplier.html), PIX Patient Identity Source |
+| Downstream systems (LIMS, RIS, EPR modules) | Receive ADT^A31 / ADT^A40 and update their local copy | [Patient Demographics Consumer](ActorDefinition-PatientDemographicsConsumer.html) |
 {:.grid}
 
-The MNS subscriber and the Patient Demographics Supplier can be the PAS itself or an integration engine in front of the PAS. In both cases the PAS master record **shall** be updated before the A31 is sent, so that later ITI-30 and ITI-31 messages carry the same demographics.
+The MNS subscriber and the Patient Demographics Supplier can be the PAS itself or an integration engine in front of the PAS. In both cases the PAS master record **shall** be updated before the A31 is sent, so that later ITI-30 and ITI-31 messages carry the same demographics. The Patient Demographics Supplier and Consumers **shall** support the [Merge Option](PAM.html), which this UK extension already requires.
 
 ### Process flow
 
@@ -41,7 +41,11 @@ sequenceDiagram
     TIE->>PDS: 3. GET /Patient/{NHS Number} (PDS FHIR API)
     PDS-->>TIE: 4. Patient (current version, meta.versionId)
     TIE->>TIE: 5. Update master patient record
-    TIE->>PDC: 6. ADT^A31 Update Patient Information [ITI-30]
+    alt nhs-number-change-2
+        TIE->>PDC: 6. ADT^A40 Merge Patient - Patient Identifier List [ITI-30]
+    else pds-record-change-2 or pds-death-notification-2
+        TIE->>PDC: 6. ADT^A31 Update Patient Information [ITI-30]
+    end
     PDC-->>TIE: ACK AA
 ```
 
@@ -67,13 +71,13 @@ On receipt of any of the three events, the subscriber:
 3. **may** compare the event `versionid` (`meta.versionId`) with the version stored locally, to skip events already processed.
 4. **shall** retrieve the current Patient from the PDS FHIR API: `GET https://api.service.nhs.uk/personal-demographics/FHIR/R4/Patient/{subject}` with an `X-Request-ID` header and a bearer token.
 5. **shall** update the master patient record from the PDS response, keeping the local MRN (PID-3 `MR`) unchanged.
-6. **shall** send an ADT^A31 to Patient Demographics Consumers, carrying the full current demographics (see [Expected Actions](ITI-30.html#expected-actions)). PID-3 **shall** include the local MRN, which is the identifier consumers match on.
+6. **shall** send an ADT^A31 to Patient Demographics Consumers, carrying the full current demographics (see [Expected Actions](ITI-30.html#expected-actions)). PID-3 **shall** include the local MRN, which is the identifier consumers match on. For `nhs-number-change-2` it **shall** send an ADT^A40 instead (see [Example 3](#example-3-nhs-number-change-nhs-number-change-2)).
 
 If the subscriber does not hold the MRN for the NHS Number, it obtains it from the PAS with a patient demographics query. See [Working with NHS England APIs](nhs-england-apis.html#obtaining-the-mrn).
 
 EVN-6 (Event Occurred) **should** be the event `time` from the notification. PID-33 (Last Update Date/Time) **may** carry the same value.
 
-### Mapping PDS FHIR Patient to ADT^A31
+### Mapping PDS FHIR Patient to ADT^A31 / ADT^A40 PID
 
 | PDS FHIR Patient | v2 field | Notes |
 |------------------|----------|-------|
@@ -235,21 +239,22 @@ PDS replaces the patient's NHS Number. The event `subject` is the **original** N
 
 The TIE finds the original NHS Number in the master patient index (MRN123456) and calls `GET .../Patient/9449305552`. PDS returns the superseding record, whose `id` and NHS Number identifier are the **new** NHS Number (illustrative value `9449310602`). The TIE **shall** check whether the returned `id` differs from the requested NHS Number. If it does, the TIE replaces the NHS Number in the master record.
 
-ADT^A31 sent to downstream systems. PID-3 carries the new NHS Number and the unchanged MRN:
+PDS changes an NHS Number when it resolves a duplicate: the original NHS Number is superseded by the surviving one. The TIE **shall** therefore send an ADT^A40 Merge Patient - Patient Identifier List, rather than an A31. PID-3 carries the surviving identifiers (new NHS Number and the MRN) with the full current demographics. MRG-1 carries the superseded NHS Number, in the same position as the NHS Number in PID-3 ([tightly coupled](ITI-30.html#message-structure---adta40-adt_a39)):
 
 ```
-MSH|^~\&|PAS|R0A|ROUTE|ROUTE|20261124141530+0000||ADT^A31^ADT_A05|MSG00103|P|2.5.1|||||GBR|UNICODE UTF-8|en||ITKv1.0
+MSH|^~\&|PAS|R0A|ROUTE|ROUTE|20261124141530+0000||ADT^A40^ADT_A39|MSG00103|P|2.5.1|||||GBR|UNICODE UTF-8|en||ITKv1.0
 EVN||20261124141530+0000||||20261124141500+0000
 PID|1||9449310602^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH~MRN123456^^^R0A^MR^R0A||CHISLETT^Octavia^^^Mrs^^L||20080920|F|||2 New Road^^MANCHESTER^^M20 2AB^GBR^H||01632960587^PRN^PH||en|S||||||A||||||||||NSTS01|20261124141500+0000
 PD1|||EXAMPLE GP PRACTICE^^Y00001^^^^^^^Y00001|G1234560^SMITH^Jane^^^Dr
-PV1|1|N
+MRG|9449305552^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH
 ```
 
-Consumers **shall** match the patient on the MRN and replace the stored NHS Number with the value in PID-3. The previous NHS Number **should** be kept as an inactive identifier for audit and for matching results that arrive late.
+Consumers **shall** process the A40 as described in [Expected Actions](ITI-30.html#expected-actions): data held against the original NHS Number is merged into the record identified by PID-3, and the original NHS Number **shall not** be treated as active. It **should** be kept as an inactive identifier for audit and for matching results that arrive late. Consumers that key on the MRN find the same record. Consumers that key on the NHS Number find it through MRG-1.
 
-<div class="alert alert-warning">
-A consumer that uses the NHS Number as its <b>only</b> patient key cannot match this A31, because the NHS Number it holds is no longer in PID-3. Such consumers need the <a href="ITI-30.html">ADT^A47</a> Change Patient Identifier List (Merge Option), which carries the old NHS Number in MRG-1. Where this applies, it <b>shall</b> be agreed locally.
-</div>
+Notes:
+
+- If the Trust holds **two** local records, one for each NHS Number (for example MRN123456 for `9449310602` and MRN999999 for `9449305552`), the PAS merges them as well. MRG-1 then also carries the non-surviving MRN in the same position as the MRN in PID-3: `MRG|9449305552^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH~MRN999999^^^R0A^MR^R0A`. Where the PAS cannot merge automatically, the event **should** raise a task for the Trust's patient records team, and the A40 is sent when the merge is done.
+- If the PDS response has the **same** `id` as the requested NHS Number, the NHS Number has not changed. The TIE **shall not** send an A40, and handles the event as a record change (A31).
 
 ### Sensitive (S-flag) patients
 
@@ -261,14 +266,14 @@ ZU8||||2
 
 ### FHIR equivalent
 
-The FHIR form of each A31 is a message Bundle whose focus is a [PAM Patient](StructureDefinition-PAMPatient.html), as in [MessageDefinition ADT-A31](MessageDefinition-ADT-A31.html). The `deceasedDateTime`, `identifier` (NHS Number) and `address` values are copied from the PDS response. The local MRN is added as the `localPatientIdentifier` slice.
+The FHIR form of each A31 is a message Bundle whose focus is a [PAM Patient](StructureDefinition-PAMPatient.html), as in [MessageDefinition ADT-A31](MessageDefinition-ADT-A31.html). The FHIR form of the A40 follows [MessageDefinition ADT-A40](MessageDefinition-ADT-A40.html): the Patient identified by the original NHS Number has `active` = false and a `link` of type `replaced-by` to the surviving Patient (see [PMIR](PMIR.html) for the equivalent FHIR feed). The `deceasedDateTime`, `identifier` (NHS Number) and `address` values are copied from the PDS response. The local MRN is added as the `localPatientIdentifier` slice.
 
 ### Error handling
 
 | Situation | Action |
 |-----------|--------|
-| PDS returns 404, or the record is invalidated | Do not send an A31. Raise a data quality task for the Trust's patient records team |
+| PDS returns 404, or the record is invalidated | Do not send an A31 or A40. Raise a data quality task for the Trust's patient records team |
 | PDS rate limit (HTTP 429) or unavailable | Retry with back-off. Events **should** be processed in `time` order per patient |
-| PDS `meta.versionId` is older than the version already stored | Do not send an A31. A later event has already been processed |
+| PDS `meta.versionId` is older than the version already stored | Do not send an A31 or A40. A later event has already been processed |
 | ACK AE/AR from a consumer | Handle as for any ITI-30 message |
 {:.grid}

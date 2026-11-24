@@ -98,7 +98,7 @@ pages:
   nhs-england-apis.md:
     title: Working with NHS England APIs (Facade)
   scenario-pds-notifications.md:
-    title: "Example Scenario: PDS Notifications (MNS) to ADT^A31"
+    title: "Example Scenario: PDS Notifications (MNS) to ADT^A31 and ADT^A40"
 
 menu:
   Home: index.html
