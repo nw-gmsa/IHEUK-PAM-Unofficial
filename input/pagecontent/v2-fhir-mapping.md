@@ -27,29 +27,47 @@ This page summarises how the HL7 v2.5.1 ADT model maps to HL7 FHIR R4. The appro
 
 ```mermaid
 flowchart LR
-    subgraph v2["ADT^A01^ADT_A01"]
-        MSH --- EVN --- PID --- PD1 --- NK1 --- PV1 --- PV2 --- AL1 --- ZU1 --- ZU8
-    end
-    subgraph fhir["Bundle (type = message)"]
-        MH[MessageHeader] --> ENC[Encounter]
-        PROV[Provenance] --> ENC
-        ENC --> PAT[Patient]
-        RP[RelatedPerson] --> PAT
-        AI[AllergyIntolerance] --> PAT
-        PAT --> ORG[Organization GP]
-        PAT --> PRAC[Practitioner GP]
-        ENC --> LOC[Location]
-    end
-    MSH -.-> MH
-    EVN -.-> PROV
-    PID -.-> PAT
+    MSH -.-> MH[MessageHeader]
+    EVN -.-> PROV[Provenance]
+    PID -.-> PAT[Patient]
     PD1 -.-> PAT
-    NK1 -.-> RP
-    PV1 -.-> ENC
+    ZU8 -.-> PAT
+    NK1 -.-> RP[RelatedPerson]
+    PV1 -.-> ENC[Encounter]
     PV2 -.-> ENC
     ZU1 -.-> ENC
-    AL1 -.-> AI
-    ZU8 -.-> PAT
+    AL1 -.-> AI[AllergyIntolerance]
+    MH --> ENC
+    PROV --> ENC
+    ENC --> PAT
+    RP --> PAT
+    AI --> PAT
+    PAT --> ORG[Organization GP]
+    PAT --> PRAC[Practitioner GP]
+    ENC --> LOC[Location]
+    subgraph v2["ADT^A01^ADT_A01 segments"]
+        MSH
+        EVN
+        PID
+        PD1
+        ZU8
+        NK1
+        PV1
+        PV2
+        ZU1
+        AL1
+    end
+    subgraph fhir["Bundle (type = message)"]
+        MH
+        PROV
+        ENC
+        PAT
+        RP
+        AI
+        ORG
+        PRAC
+        LOC
+    end
 ```
 
 ### Trigger event to FHIR

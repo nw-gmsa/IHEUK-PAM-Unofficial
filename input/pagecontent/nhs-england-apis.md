@@ -127,10 +127,10 @@ sequenceDiagram
     participant PAS
     participant F as Facade
     participant MNS
-    PAS->>F: ADT^A28 / ADT^A31 (PID-3 NHS Number, PID-32 NSTS01)
-    F->>F: Subscription already covers this patient?
+    PAS->>F: ADT^A28 / ADT^A31<br/>(PID-3 NHS Number, PID-32 NSTS01)
+    F->>F: Subscription already<br/>covers this patient?
     alt No subscription
-        F->>MNS: POST /subscriptions (FHIR Subscription, criteria, MESH or SQS endpoint)
+        F->>MNS: POST /subscriptions<br/>(FHIR Subscription, criteria,<br/>MESH or SQS endpoint)
         MNS-->>F: 201 Created {id}
     end
 ```
@@ -149,16 +149,16 @@ sequenceDiagram
     participant F as Facade
     participant PDS
     participant PAS
-    participant C as Trust systems (PD Consumers)
-    MNS->>F: Event (subject = NHS Number)
+    participant C as Trust systems<br/>(PD Consumers)
+    MNS->>F: Event<br/>(subject = NHS Number)
     F->>PDS: GET Patient/{NHS Number}
     PDS-->>F: Patient
     opt MRN not held by the facade
-        F->>PAS: PDQ query by NHS Number (QBP^Q22 or PDQm ITI-78)
-        PAS-->>F: Patient with MRN (PID-3 MR)
+        F->>PAS: PDQ query by NHS Number<br/>(QBP^Q22 or PDQm ITI-78)
+        PAS-->>F: Patient with MRN<br/>(PID-3 MR)
     end
-    F->>PAS: ADT^A31 (NHS Number + MRN)
-    F->>C: ADT^A31 (NHS Number + MRN)
+    F->>PAS: ADT^A31<br/>(NHS Number + MRN)
+    F->>C: ADT^A31<br/>(NHS Number + MRN)
 ```
 
 #### 3. Obtaining the MRN {#obtaining-the-mrn}

@@ -33,18 +33,18 @@ The MNS subscriber and the Patient Demographics Supplier can be the PAS itself o
 sequenceDiagram
     participant PDS
     participant MNS
-    participant TIE as TIE / PAS (PD Supplier)
-    participant PDC as Downstream (PD Consumer)
+    participant TIE as TIE / PAS<br/>(PD Supplier)
+    participant PDC as Downstream<br/>(PD Consumer)
     PDS->>MNS: Patient record change
-    MNS->>TIE: 1. Event notification (pds-record-change-2, pds-death-notification-2 or nhs-number-change-2)
-    TIE->>TIE: 2. Is subject a known patient? If not, discard
-    TIE->>PDS: 3. GET /Patient/{NHS Number} (PDS FHIR API)
-    PDS-->>TIE: 4. Patient (current version, meta.versionId)
-    TIE->>TIE: 5. Update master patient record
+    MNS->>TIE: 1. Event notification<br/>(pds-record-change-2,<br/>pds-death-notification-2<br/>or nhs-number-change-2)
+    TIE->>TIE: 2. Is subject a known patient?<br/>If not, discard
+    TIE->>PDS: 3. GET /Patient/{NHS Number}<br/>(PDS FHIR API)
+    PDS-->>TIE: 4. Patient<br/>(current version, meta.versionId)
+    TIE->>TIE: 5. Update master<br/>patient record
     alt nhs-number-change-2
-        TIE->>PDC: 6. ADT^A40 Merge Patient - Patient Identifier List [ITI-30]
+        TIE->>PDC: 6. ADT^A40 Merge Patient -<br/>Patient Identifier List [ITI-30]
     else pds-record-change-2 or pds-death-notification-2
-        TIE->>PDC: 6. ADT^A31 Update Patient Information [ITI-30]
+        TIE->>PDC: 6. ADT^A31 Update<br/>Patient Information [ITI-30]
     end
     PDC-->>TIE: ACK AA
 ```

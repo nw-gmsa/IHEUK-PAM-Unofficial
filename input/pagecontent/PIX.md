@@ -52,13 +52,13 @@ HSCIC ITK marks PID-33 and PID-34 as "not used in ITK". A Patient Identity Sourc
 
 ```mermaid
 sequenceDiagram
-    participant PAS as PAS (Identity Source, R0A MRN domain)
-    participant MPI as MPI (PIX Manager)
-    participant LIMS as LIMS (PIX Consumer)
-    PAS->>MPI: ADT^A28 (MRN123456, NHS 9449305552)
+    participant PAS as PAS<br/>(Identity Source,<br/>R0A MRN domain)
+    participant MPI as MPI<br/>(PIX Manager)
+    participant LIMS as LIMS<br/>(PIX Consumer)
+    PAS->>MPI: ADT^A28<br/>(MRN123456, NHS 9449305552)
     MPI-->>PAS: ACK
-    LIMS->>MPI: QBP^Q23 IHE PIX Query (LIMS ID L998877)
-    MPI-->>LIMS: RSP^K23 (MRN123456^^^R0A, 9449305552^^^NHS)
-    PAS->>MPI: ADT^A40 Merge MRN999999 into MRN123456
-    MPI->>LIMS: ADT^A31 PIX Update Notification
+    LIMS->>MPI: QBP^Q23 IHE PIX Query<br/>(LIMS ID L998877)
+    MPI-->>LIMS: RSP^K23<br/>(MRN123456^^^R0A, 9449305552^^^NHS)
+    PAS->>MPI: ADT^A40 Merge<br/>MRN999999 into MRN123456
+    MPI->>LIMS: ADT^A31<br/>PIX Update Notification
 ```
