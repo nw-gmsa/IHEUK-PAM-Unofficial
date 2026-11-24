@@ -69,6 +69,8 @@ On receipt of any of the three events, the subscriber:
 5. **shall** update the master patient record from the PDS response, keeping the local MRN (PID-3 `MR`) unchanged.
 6. **shall** send an ADT^A31 to Patient Demographics Consumers, carrying the full current demographics (see [Expected Actions](ITI-30.html#expected-actions)). PID-3 **shall** include the local MRN, which is the identifier consumers match on.
 
+If the subscriber does not hold the MRN for the NHS Number, it obtains it from the PAS with a patient demographics query. See [Working with NHS England APIs](nhs-england-apis.html#obtaining-the-mrn).
+
 EVN-6 (Event Occurred) **should** be the event `time` from the notification. PID-33 (Last Update Date/Time) **may** carry the same value.
 
 ### Mapping PDS FHIR Patient to ADT^A31

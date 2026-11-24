@@ -95,6 +95,8 @@ pages:
     title: Testing and Example Messages
   hscic-examples.md:
     title: HSCIC ITK Example Messages (v2.4 and v2.5.1)
+  nhs-england-apis.md:
+    title: Working with NHS England APIs (Facade)
   scenario-pds-notifications.md:
     title: "Example Scenario: PDS Notifications (MNS) to ADT^A31"
 
@@ -107,6 +109,7 @@ menu:
     Patient Demographics Query for Mobile (PDQm): PDQm.html
     Patient Identifier Cross-reference for Mobile (PIXm): PIXm.html
     Patient Master Identity Registry (PMIR): PMIR.html
+    Working with NHS England APIs (Facade): nhs-england-apis.html
     "Example Scenario: Inpatient admission, leave and discharge": ExampleScenario-InpatientLeaveAndDischarge.html
     "Example Scenario: PDS Notifications (MNS)": scenario-pds-notifications.html
   Volume 2 (Transactions):
