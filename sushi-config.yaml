@@ -95,6 +95,8 @@ pages:
     title: Testing and Example Messages
   hscic-examples.md:
     title: HSCIC ITK Example Messages (v2.4 and v2.5.1)
+  scenario-pds-notifications.md:
+    title: "Example Scenario: PDS Notifications (MNS) to ADT^A31"
 
 menu:
   Home: index.html
@@ -106,6 +108,7 @@ menu:
     Patient Identifier Cross-reference for Mobile (PIXm): PIXm.html
     Patient Master Identity Registry (PMIR): PMIR.html
     "Example Scenario: Inpatient admission, leave and discharge": ExampleScenario-InpatientLeaveAndDischarge.html
+    "Example Scenario: PDS Notifications (MNS)": scenario-pds-notifications.html
   Volume 2 (Transactions):
     Patient Identity Management [ITI-30]: ITI-30.html
     Patient Encounter Management [ITI-31]: ITI-31.html
