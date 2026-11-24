@@ -13,6 +13,87 @@ Downstream systems need this information to work with the correct patient and vi
 
 ### Why event messages?
 
+#### In everyday terms
+
+An **event** is a short message saying that **something has just happened**. It is sent straight away to everyone who needs to know, and each of them decides what to do about it.
+
+**A family WhatsApp group.** When someone is taken to the emergency department or admitted to hospital, a relative usually sends a quick message to the family group: *"Mum's been admitted to Ward 12."* That message is an event. It does not include her medical notes. It just tells everyone what has happened, straight away, and they each act on it: one cancels the visit planned for tomorrow, another rings the ward, another feeds the cat. Later, *"Mum's home!"* is another event, and people act again. Hospital events do the same for the GP, community nurses, social care and other systems: *"this patient has been admitted"*, *"this patient has gone home"*.
+
+```mermaid
+flowchart LR
+    HAPPEN["Mum is admitted<br/>to hospital"]
+    EVT>"Mum's been admitted<br/>to Ward 12"]
+    GROUP(("Family<br/>WhatsApp group"))
+    S1["Sister cancels<br/>tomorrow's visit"]
+    S2["Brother rings<br/>the ward"]
+    S3["Neighbour<br/>feeds the cat"]
+    HAPPEN -.-> EVT --> GROUP
+    GROUP --> S1
+    GROUP --> S2
+    GROUP --> S3
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class EVT inscope
+```
+
+The same pattern in the hospital:
+
+```mermaid
+flowchart LR
+    HAPPEN["Patient is admitted<br/>to Ward 12"]
+    EVT>"A01 Admit"]
+    HUB(("Integration engine"))
+    GP["GP practice<br/>cancels a home visit"]
+    CN["Community nursing<br/>pauses visits"]
+    SC["Social care<br/>pauses the care package"]
+    LAB["Lab and pharmacy<br/>send to Ward 12"]
+    HAPPEN -.-> EVT --> HUB
+    HUB --> GP
+    HUB --> CN
+    HUB --> SC
+    HUB --> LAB
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class EVT inscope
+```
+
+**Your nervous system.** When you touch something hot, your nerves send a signal: *"my hand is hot"*. That signal is an event. It does not explain **why** the hand is hot (a kettle, a radiator, the sun). It just says what has happened, fast enough for you to pull your hand away. Finding out why, and what to do next, needs more information. In healthcare, that further information is the **documents**: referrals, clinic letters and discharge reports (see [Patient journeys](#patient-journeys)). The event says *"the patient has been discharged"*; the discharge report explains why they were in hospital and what should happen next.
+
+```mermaid
+flowchart LR
+    subgraph BODY ["Your body"]
+        direction LR
+        TOUCH["Hand touches<br/>something hot"]
+        EVT1>"My hand is hot"]
+        ACT1["Pull hand away<br/>(act now)"]
+        WHY1("Why? It was the kettle<br/>(find out later)")
+        TOUCH -.-> EVT1 --> ACT1
+        ACT1 --> WHY1
+    end
+    subgraph HOSP ["Healthcare"]
+        direction LR
+        DIS["Patient leaves<br/>hospital"]
+        EVT2>"A03 Discharge"]
+        ACT2["Restart home visits<br/>(act now)"]
+        WHY2("Hospital Discharge Report:<br/>why, and what next")
+        DIS -.-> EVT2 --> ACT2
+        ACT2 --> WHY2
+    end
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    classDef context fill:#f8f9fa,stroke:#6c757d,color:#495057
+    class EVT1,EVT2 inscope
+    class WHY1,WHY2 context
+```
+
+| | Event | Document |
+|---|---|---|
+| Everyday example | *"Mum's been admitted"* on WhatsApp; *"my hand is hot"* | The hospital's notes on why; finding the kettle |
+| Says | **That** something happened, and when | **Why**, and what should happen next |
+| Size | Short | Detailed |
+| Speed | Sent at once | Written and sent afterwards, sometimes days later |
+| Used to | Act now: cancel a visit, prepare a bed, restart care | Inform clinical decisions |
+{:.grid}
+
+#### In technical terms
+
 ADT and IHE PAM messages are **events**, not data exchanges. Each message says that something has **happened** to a patient in the hospital: *the patient was admitted*, *the patient moved to Ward 12*, *the patient went home on leave*, *the patient's address changed*. The message carries the data that goes with the event, but the event itself is the point.
 
 This is the same idea as a *domain event* in software architecture, for example in [Domain-Driven Design](https://martinfowler.com/eaaDev/DomainEvent.html) and event-driven architecture:
@@ -42,6 +123,7 @@ The examples below show, in plain terms, what one event can do across the patien
 |-----------------------------|-------|-----------------------------------|
 | A planned admission is booked | A05 Pre-admit | Hospital teams can prepare (theatre lists, pre-operative tests). Carers and community teams can plan around the admission date. |
 | The patient attends an emergency department or a hospital appointment | A04 Register | Hospital systems (lab, radiology) know who the patient is, so tests are labelled correctly. The GP and other care providers can be told the patient **has attended**. The clinic letter that follows is a separate document (see the note below). |
+| The hospital expects to admit the patient | A14 Pending Admit | A decision to admit has been made (for example in the emergency department, or for a transfer from another hospital), but the patient is not yet on a ward. The receiving ward, bed management and porters can **prepare a bed**. The GP and other providers giving care can be told **early** that the patient is likely to stay in hospital. If the admission does not go ahead, A27 Cancel Pending Admit tells them. |
 | The patient is admitted to hospital | A01 Admit | The GP and other providers currently giving care (community nursing, social care, care home) learn the patient is in hospital. They can take action, such as **cancelling a home visit**, pausing a care package, or not chasing a missed appointment. Inside the hospital, ward, bed and pharmacy systems are updated. |
 | The patient moves ward or site | A02 Transfer | Everyone involved knows where the patient now is, so results, medicines and visitors go to the right place. If the move was entered by mistake, A12 Cancel Transfer puts everything back. |
 | The patient goes home on leave and comes back | A21 Leave / A22 Return | The hospital keeps the bed. Community teams know the patient is at home for a period and may need support. See the [Example Scenario](ExampleScenario-InpatientLeaveAndDischarge.html). |
@@ -57,6 +139,229 @@ The examples below show, in plain terms, what one event can do across the patien
 </div>
 
 Without events, each of these organisations would have to keep checking whether anything had changed, or staff would have to phone, email or re-enter the same information several times. Both are slow and lead to errors, such as a nurse visiting an empty house while the patient is in hospital.
+
+### Patient journeys
+
+The diagrams below follow typical clinical pathways and show the events sent along the way.
+
+- **Square boxes** are the steps in the pathway: what happens to the patient.
+- **Flag shapes** (green) are the **events** a step sends (dotted arrows). These are what this guide defines.
+- **Rounded boxes** (grey) are **documents** that come into the hospital (referrals, handovers) or go out of it (clinic letters, discharge reports). Documents are separate from the events and are not part of IHE PAM (see [An event is not a report](#illustrative-use-cases)).
+
+#### Inpatient stay
+
+An admission usually starts with a document: a referral (for example from the GP) or, for emergencies, the ambulance crew's handover to the emergency department. It ends with a Hospital Discharge Report. The admission, leave, return, discharge planning and discharge steps are the [Inpatient admission, leave and discharge](ExampleScenario-InpatientLeaveAndDischarge.html) Example Scenario. All events in the stay carry the same Hospital Provider Spell (PV1-19).
+
+```mermaid
+flowchart LR
+    REF("Referral or<br/>ambulance to ED handover")
+    DTA["Decision to admit"]
+    ADM["Admitted to ward"]
+    LOA["Goes home on leave"]
+    RET["Returns from leave"]
+    PLAN["Discharge planned"]
+    DIS["Leaves hospital"]
+    HDR("Hospital Discharge Report<br/>(discharge summary)")
+    REF --> DTA --> ADM --> LOA --> RET --> PLAN --> DIS --> HDR
+    E14>"A14 Pending Admit"]
+    E01>"A01 Admit"]
+    E21>"A21 Leave of Absence"]
+    E22>"A22 Return from Leave"]
+    E16>"A16 Pending Discharge"]
+    E03>"A03 Discharge"]
+    DTA -.-> E14
+    ADM -.-> E01
+    LOA -.-> E21
+    RET -.-> E22
+    PLAN -.-> E16
+    DIS -.-> E03
+    classDef context fill:#f8f9fa,stroke:#6c757d,color:#495057
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class REF,HDR context
+    class E14,E01,E21,E22,E16,E03 inscope
+```
+
+#### Outpatient care
+
+Outpatient care is usually a **series of attendances** for one referral, all under the same outpatient spell (PV1-19). Each attendance has its own identifier (PV1-50). The pattern for each attendance is the same: the patient arrives and checks in (at a kiosk or a staffed reception), sees the consultant, and leaves. The consultant often writes a clinic letter after the attendance. At the last attendance, the consultant writes a discharge letter (Hospital Discharge Report).
+
+```mermaid
+flowchart LR
+    REF("Referral")
+    BOOK["Appointment booked"]
+    subgraph ATT ["Each attendance"]
+        direction LR
+        ARR["Arrives and checks in<br/>kiosk or reception"]
+        SEEN["Seen by the consultant"]
+        LEAVE["Leaves"]
+        ARR --> SEEN --> LEAVE
+    end
+    LET("Clinic letter")
+    HDR("Discharge letter<br/>Hospital Discharge Report")
+    REF --> BOOK --> ARR
+    LEAVE --> LET
+    LEAVE -- "follow-up needed" --> BOOK
+    LEAVE -- "last attendance" --> HDR
+    E05>"A05 Pre-admit<br/>where used"]
+    E04>"A04 Register"]
+    E03>"A03 Discharge"]
+    E04L>"A04 Register<br/>or A08 Update if A04 already sent"]
+    BOOK -.-> E05
+    ARR -.-> E04
+    LEAVE -.-> E04L
+    LEAVE -.-> E03
+    classDef context fill:#f8f9fa,stroke:#6c757d,color:#495057
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class REF,LET,HDR context
+    class E05,E04,E04L,E03 inscope
+```
+
+When the patient leaves, the attendance is recorded with an A04 Register. If an A04 was already sent at check-in, an A08 Update Patient Information is sent instead, carrying the completed attendance (for example the attendance outcome). The A03 Discharge marks the end of the attendance.
+
+A cancelled or missed appointment is handled with the cancel events (A38 Cancel Pre-admit, A11 Cancel Registration), so that other systems do not expect the patient.
+
+#### Virtual ward and hospital at home
+
+A virtual ward (or hospital at home) cares for the patient at home, often straight after an inpatient stay. For events it is like outpatient care: the stay on the virtual ward has a start and an end, and **each home visit is like an outpatient attendance**. How the virtual ward is represented (patient class, location, encounter identifiers) **should** be agreed locally.
+
+The home visits are where most of the care happens. Many different people may visit the patient: the GP, community nurses, social workers, therapists, the virtual ward's own clinicians and remote monitoring staff. Each usually works for a different organisation and uses a different system. If each visit sends events, the people caring for the patient **let each other know about their visits**, without phone calls:
+
+- **Visit planned (A05)**: others can see who is coming and when. This avoids two visits on the same morning, or none at all, and lets visits be combined.
+- **Visit cancelled (A38)**: others know the visit is not happening, so they can step in.
+- **Visitor arrives (A04)** and **visit ends (A03)**: others know the patient has been seen, by whom and when. Lone-worker and safety checks can also use them.
+
+```mermaid
+flowchart LR
+    IPDIS["Leaves hospital ward"]
+    REF("Referral or handover<br/>to the virtual ward")
+    START["Starts on the virtual ward"]
+    subgraph VISIT ["Each home visit: GP, community nurse, social worker, therapist ..."]
+        direction LR
+        VPLAN["Visit planned"]
+        VARR["Visitor arrives"]
+        VCARE["Care given"]
+        VEND["Visitor leaves"]
+        VCAN["Visit cancelled"]
+        VPLAN --> VARR --> VCARE --> VEND
+        VPLAN --> VCAN
+    end
+    PLAN["Discharge planned"]
+    VWEND["Leaves the virtual ward"]
+    HDR("Hospital Discharge Report")
+    VLET("Clinical letter")
+    IPDIS --> REF --> START --> VPLAN
+    VEND -- "as required" --> VLET
+    VEND -- "next visit" --> VPLAN
+    VEND -- "care complete" --> PLAN --> VWEND --> HDR
+    EIP03>"A03 Discharge<br/>inpatient"]
+    ES04>"A04 Register"]
+    EV05>"A05 Pre-admit"]
+    EV04>"A04 Register"]
+    EV03>"A03 Discharge"]
+    EV38>"A38 Cancel Pre-admit"]
+    E16>"A16 Pending Discharge"]
+    E03>"A03 Discharge"]
+    IPDIS -.-> EIP03
+    START -.-> ES04
+    VPLAN -.-> EV05
+    VARR -.-> EV04
+    VEND -.-> EV03
+    VCAN -.-> EV38
+    PLAN -.-> E16
+    VWEND -.-> E03
+    classDef context fill:#f8f9fa,stroke:#6c757d,color:#495057
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class REF,VLET,HDR context
+    class EIP03,ES04,EV05,EV04,EV03,EV38,E16,E03 inscope
+```
+
+Every visit event is shared with all the organisations caring for the patient (virtual ward team, GP, community nursing, social care), usually through an integration engine or shared care record. Each organisation sends its own visit events and receives everyone else's.
+
+Clinical letters are produced after a visit as required, for example to the GP when treatment changes. Notes on the visit itself (observations, care given) are recorded in each organisation's own record or a shared care record. As with outpatient clinic letters, neither is part of the event.
+
+The events tell the GP, community nursing and social care that the patient is under the hospital's care at home, and when that care ends. This is the same as for an inpatient stay, even though the patient is not in a hospital bed.
+
+<div class="alert alert-info">
+<b>Documents and the NHS England Single Patient Record.</b> The documents produced along these pathways (referrals, ambulance handovers, clinic and clinical letters, Hospital Discharge Reports) are likely to be the focus of the NHS England <b>Single Patient Record</b>, which aims to bring together the information each organisation holds about a patient. The events in this guide play a different role. They say <i>when</i> something happens and <i>where</i> the patient is, so that care can be coordinated as it happens. A record of documents and an event feed complement each other: events can tell systems that a new document is expected or that a patient's situation has changed, and the documents hold the clinical detail.
+</div>
+
+### How events are distributed
+
+Once an event has happened, it has to reach the systems that need it. There are three common patterns, described in [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/). Back to the WhatsApp analogy: a direct message to one person, a message that someone forwards to a chosen list, or a group that people choose to join.
+
+#### Point-to-point
+
+A [Point-to-Point Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PointToPointChannel.html) carries each message from one sender to **one** receiver. It is the most common pattern inside a Trust's integration engine (TIE): each interface links two systems, for example the PAS to the LIMS. It is also the pattern used by the NHS England [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/services/message-exchange-for-social-care-and-health-mesh), where a message is sent to one named mailbox.
+
+```mermaid
+flowchart LR
+    PAS["PAS"]
+    EVT>"A01 Admit"]
+    LIMS["LIMS"]
+    PAS -.-> EVT --> LIMS
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class EVT inscope
+```
+
+Everyday terms: a direct message to one person. To tell five people, the sender has to send five messages and know who all five are.
+
+#### Message routing
+
+With [Message Routing](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageRoutingIntro.html), the sender sends the event once to a router, and the router sends it on to **several** consumers. In a TIE the list of consumers is usually **fixed** and set up by the integration team. The router often uses [content-based routing](https://www.enterpriseintegrationpatterns.com/patterns/messaging/ContentBasedRouter.html): it looks inside the message to decide where it goes. For example, an A01 goes to the Trust's own systems and to the patient's GP system, chosen by the registered GP practice in PD1-3. The [Inpatient admission, leave and discharge](ExampleScenario-InpatientLeaveAndDischarge.html) Example Scenario uses this pattern.
+
+```mermaid
+flowchart LR
+    PAS["PAS"]
+    EVT>"A01 Admit"]
+    TIE{{"Integration engine<br/>content-based router"}}
+    LIMS["LIMS"]
+    PHARM["Pharmacy"]
+    GP["Patient's GP system<br/>(from PD1-3)"]
+    PAS -.-> EVT --> TIE
+    TIE --> LIMS
+    TIE --> PHARM
+    TIE -- "registered practice" --> GP
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class EVT inscope
+```
+
+NHS England does not have a national integration engine, so it does not route events in this way. (Technically, Transfer of Care messaging was an exception.) NHS Wales does run a national integration engine, for laboratory document messages.
+
+Everyday terms: you tell one person, and they forward the news to a list of people they already know need it.
+
+#### Publish-subscribe
+
+With a [Publish-Subscribe Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html), the sender **publishes** the event once, and every consumer that has **chosen to subscribe** to that kind of event gets a copy. The sender does not keep a list of consumers; the consumers decide for themselves. The NHS England [Multicast Notification Service (MNS)](https://digital.nhs.uk/developer/api-catalogue/multicast-notification-service) uses this pattern. See the [PDS Notifications scenario](scenario-pds-notifications.html).
+
+```mermaid
+flowchart LR
+    PDS["PDS"]
+    EVT>"pds-record-change-2"]
+    MNS{{"MNS<br/>publish-subscribe"}}
+    T1["Trust A<br/>(subscribed)"]
+    T2["Trust B<br/>(subscribed)"]
+    T3["GP system<br/>(subscribed)"]
+    PDS -.-> EVT --> MNS
+    MNS --> T1
+    MNS --> T2
+    MNS --> T3
+    classDef inscope fill:#d4edda,stroke:#155724,color:#155724
+    class EVT inscope
+```
+
+Everyday terms: the family WhatsApp group. Whoever has joined the group sees the message. The sender does not need to know who they are.
+
+#### Comparison
+
+| | Point-to-point | Message routing | Publish-subscribe |
+|---|---|---|---|
+| Receivers per message | One | Several, from a fixed list | Everyone who has subscribed |
+| Who decides who receives | The sender | The integration team (routing rules) | Each consumer |
+| Adding a new consumer | New interface from the sender | Change the routing rules | The consumer subscribes |
+| Typical use | Interfaces inside a TIE; NHS England MESH | Trust TIE (for example A01 to local systems and the GP); NHS Wales laboratory messages | NHS England MNS |
+{:.grid}
+
+The meaning of an event is the same whatever the pattern. A Trust TIE often combines them: it receives MNS events by subscription, turns them into ADT messages (see the [PDS Notifications scenario](scenario-pds-notifications.html)), routes them to a fixed list of consumers, and delivers each one point-to-point.
 
 ### Events and FHIR
 
