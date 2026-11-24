@@ -249,6 +249,8 @@ PD1|||EXAMPLE GP PRACTICE^^Y00001^^^^^^^Y00001|G1234560^SMITH^Jane^^^Dr
 MRG|9449305552^^^NHS&2.16.840.1.113883.2.1.4.1&ISO^NH
 ```
 
+FHIR: [Bundle-PDS-ADT-A40-NHSNumberChange](Bundle-Bundle-PDS-ADT-A40-NHSNumberChange.html). The surviving Patient (PID) has `link.type` = `replaces` and the superseded Patient (MRG) has `active` = false and `link.type` = `replaced-by`. Each `link.other` is a logical reference to the other record **by NHS Number** (`Reference.identifier`, system `https://fhir.nhs.uk/Id/nhs-number`), not a literal reference. A receiver resolves it against its own patient index, where server resource ids differ between systems.
+
 Consumers **shall** process the A40 as described in [Expected Actions](ITI-30.html#expected-actions): data held against the original NHS Number is merged into the record identified by PID-3, and the original NHS Number **shall not** be treated as active. It **should** be kept as an inactive identifier for audit and for matching results that arrive late. Consumers that key on the MRN find the same record. Consumers that key on the NHS Number find it through MRG-1.
 
 Notes:
@@ -266,7 +268,7 @@ ZU8||||2
 
 ### FHIR equivalent
 
-The FHIR form of each A31 is a message Bundle whose focus is a [PAM Patient](StructureDefinition-PAMPatient.html), as in [MessageDefinition ADT-A31](MessageDefinition-ADT-A31.html). The FHIR form of the A40 follows [MessageDefinition ADT-A40](MessageDefinition-ADT-A40.html): the Patient identified by the original NHS Number has `active` = false and a `link` of type `replaced-by` to the surviving Patient (see [PMIR](PMIR.html) for the equivalent FHIR feed). The `deceasedDateTime`, `identifier` (NHS Number) and `address` values are copied from the PDS response. The local MRN is added as the `localPatientIdentifier` slice.
+The FHIR form of each A31 is a message Bundle whose focus is a [PAM Patient](StructureDefinition-PAMPatient.html), as in [MessageDefinition ADT-A31](MessageDefinition-ADT-A31.html). The FHIR form of the A40 follows [MessageDefinition ADT-A40](MessageDefinition-ADT-A40.html): the Patient identified by the original NHS Number has `active` = false and a `link` of type `replaced-by` to the surviving Patient, with `link.other` given as the NHS Number identifier ([example](Bundle-Bundle-PDS-ADT-A40-NHSNumberChange.html)) (see [PMIR](PMIR.html) for the equivalent FHIR feed). The `deceasedDateTime`, `identifier` (NHS Number) and `address` values are copied from the PDS response. The local MRN is added as the `localPatientIdentifier` slice.
 
 ### Error handling
 
